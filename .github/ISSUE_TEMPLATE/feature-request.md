@@ -13,11 +13,13 @@ assignees: ''
 
 - 기본적으로 이슈를 작성하는 사람이 Assignee입니다.
 
-- Labels로 진행 상황 표기합니다.
+- Labels로 진행 상황 표기합니다. (to do, in progress, done 셋 중 하나는 반드시 필요)
 
 - Assignees를 배정합니다.
 
 - Branch는 `Feature/<이슈번호>-<기능>`으로 작성합니다.
+
+- `YOLO Wallet` Project를 선택합니다.
 
 </details>
 
