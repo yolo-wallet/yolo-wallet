@@ -1,6 +1,4 @@
-import { YOLO_USER_DOC_TYPE } from '@/constants/constants'
 import addUser from '@/transections/addUser'
-import { createClient } from '@sanity/client'
 import NextAuth, { NextAuthOptions } from 'next-auth'
 import GoogleProvider from 'next-auth/providers/google'
 

@@ -5,7 +5,15 @@ export default function LoginBtn() {
     return (
       <>
         Signed in as {session.user?.email} <br />
-        <button onClick={() => signOut()}>Sign out</button>
+        <button
+          onClick={(e) => {
+            // https://stackoverflow.com/questions/74180557/next-auth-next-autherrorclient-fetch-error-networkerror-when-attempting-to
+            e.preventDefault()
+            signOut()
+          }}
+        >
+          Sign out
+        </button>
       </>
     )
   }
@@ -13,7 +21,15 @@ export default function LoginBtn() {
   return (
     <>
       Not signed in <br />
-      <button onClick={() => signIn()}>Sign in</button>
+      <button
+        onClick={(e) => {
+          // https://stackoverflow.com/questions/74180557/next-auth-next-autherrorclient-fetch-error-networkerror-when-attempting-to
+          e.preventDefault()
+          signIn()
+        }}
+      >
+        Sign in
+      </button>
     </>
   )
 }
