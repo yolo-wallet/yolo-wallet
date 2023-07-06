@@ -4,8 +4,11 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
+    "vercel:dev": "vercel dev",
+    "vercel:prod": "vercel --prod",
     "build": "next build",
     "start": "next start",
+    "start:local": "cross-env NEXTAUTH_URL=http://localhost:3000 next start",
     "lint": "next lint"
   },
   "dependencies": {
@@ -14,6 +17,7 @@
     "@types/react": "18.2.14",
     "@types/react-dom": "18.2.6",
     "autoprefixer": "10.4.14",
+    "cross-env": "^7.0.3",
     "eslint": "8.44.0",
     "eslint-config-next": "13.4.8",
     "next": "13.4.8",
