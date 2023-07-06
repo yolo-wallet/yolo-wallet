@@ -20,14 +20,10 @@ export type ExpenseResponse = {
   amount: number
   category: string
 }
-export default async function getAllExpensesByCategoryTransaction(
-  category: string
-) {
+export default async function getAllExpensesByCategoryTransaction(category: string) {
   try {
     // todo : filter 쿼리 추가하기
-    const expenses = await client.fetch(
-      `*[_type == "${YOLO_USER_EXPENSES_DOC_TYPE}"]`
-    )
+    const expenses = await client.fetch(`*[_type == "${YOLO_USER_EXPENSES_DOC_TYPE}"]`)
     return expenses
       .map((expense: Expense) => {
         return {
@@ -35,7 +31,7 @@ export default async function getAllExpensesByCategoryTransaction(
           userId: expense.user._ref,
           date: expense.date,
           amount: expense.amount,
-          category: expense.category,
+          category: expense.category
         }
       })
       .filter((expense: ExpenseResponse) => {

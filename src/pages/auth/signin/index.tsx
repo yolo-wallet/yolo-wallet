@@ -1,36 +1,22 @@
-import type {
-  GetServerSidePropsContext,
-  InferGetServerSidePropsType,
-} from 'next'
+import type { GetServerSidePropsContext } from 'next'
 import { authOptions } from '@/pages/api/auth/[...nextauth]'
 import { getServerSession } from 'next-auth'
-import {
-  ClientSafeProvider,
-  LiteralUnion,
-  getProviders,
-  signIn,
-} from 'next-auth/react'
+import { ClientSafeProvider, LiteralUnion, getProviders, signIn } from 'next-auth/react'
 import { BuiltInProviderType } from 'next-auth/providers'
-import { useRouter } from 'next/router'
 
 type Props = {
-  providers: Record<
-    LiteralUnion<BuiltInProviderType, string>,
-    ClientSafeProvider
-  >
+  providers: Record<LiteralUnion<BuiltInProviderType, string>, ClientSafeProvider>
 }
 
+// if you want to use custom login page, you can use this page.
+// If you want to redirect while you're in the loged-in state, you could use "useRoute" hook.
 export default function SignPage({ providers }: Props) {
-  // const router = useRouter()
-  // const callbackUrl = (router.query.callbackUrl as string) || '/'
   return (
     <div>
       {Object.values(providers).map((provider) => {
         return (
           <div key={provider.name}>
-            <button onClick={() => signIn(provider.id, { callbackUrl: '/' })}>
-              Sign in with {provider.name}
-            </button>
+            <button onClick={() => signIn(provider.id, { callbackUrl: '/' })}>Sign in with {provider.name}</button>
           </div>
         )
       })}
@@ -44,9 +30,9 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
   }
   const providers = await getProviders()
   return {
-    props: { providers: providers ?? [] },
+    props: { providers: providers ?? [] }
   }
 }
 
-// reference
+// * reference
 // https://next-auth.js.org/configuration/pages

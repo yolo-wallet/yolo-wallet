@@ -15,7 +15,7 @@ export default async function addUser({ id, name, email, image }: User) {
       _type: YOLO_USER_DOC_TYPE,
       name,
       email,
-      image,
+      image
     })
     return true
   } catch (error) {

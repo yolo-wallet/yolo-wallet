@@ -6,8 +6,8 @@ export const authOptions: NextAuthOptions = {
   providers: [
     GoogleProvider({
       clientId: process.env.GOOGLE_OAUTH_ID || '',
-      clientSecret: process.env.GOOGLE_OAUTH_SECRET || '',
-    }),
+      clientSecret: process.env.GOOGLE_OAUTH_SECRET || ''
+    })
   ],
   callbacks: {
     async session({ session }) {
@@ -19,10 +19,10 @@ export const authOptions: NextAuthOptions = {
 
       const isSuccess = await addUser({ id, name, email, image })
       return isSuccess
-    },
+    }
   },
   pages: {
-    signIn: '/auth/signin',
-  },
+    signIn: '/auth/signin'
+  }
 }
 export default NextAuth(authOptions)

@@ -1,16 +1,6 @@
-// import { getServerSession } from 'next-auth'
-// import { getProviders } from 'next-auth/react'
-// import { redirect } from 'next/navigation'
-
 import { ExpenseResponse } from '@/transections/getAllExpenses'
-import { getSession, useSession } from 'next-auth/react'
+import { useSession } from 'next-auth/react'
 import { useState } from 'react'
-
-// type Props = {
-//   searchParams: {
-//     callbackUrl: string
-//   }
-// }
 
 export default function Test() {
   const [allUserExpenses, setAllUserExpenses] = useState([])
@@ -20,9 +10,7 @@ export default function Test() {
     e.preventDefault()
     // * form에서 데이터를 가져오는 얘시입니다. 로직은 대충 짰으니까 신경쓰지마세요!
     console.log('add expense')
-    const data = Array.from(
-      (e.target as HTMLFormElement).querySelectorAll('input')
-    )
+    const data = Array.from((e.target as HTMLFormElement).querySelectorAll('input'))
       .map((el, i) => {
         switch (i) {
           case 0:
@@ -39,7 +27,7 @@ export default function Test() {
       userId: session?.user?.email,
       category: data[0],
       amount: data[1],
-      date: data[2],
+      date: data[2]
     }
 
     console.log('expenseForm : ', expenseForm)
@@ -47,18 +35,13 @@ export default function Test() {
 
   function getAllExpensesByCategory(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault()
-    const searchQuery = (e.target as HTMLFormElement).querySelector(
-      'input'
-    )!.value
-    fetch(
-      `https://yolo-wallet.vercel.app/api/expenses/search?q=${searchQuery}`,
-      {
-        method: 'GET',
-        headers: {
-          'Content-Type': 'application/json',
-        },
+    const searchQuery = (e.target as HTMLFormElement).querySelector('input')!.value
+    fetch(`https://yolo-wallet.vercel.app/api/expenses/search?q=${searchQuery}`, {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json'
       }
-    )
+    })
       .then((res) => {
         console.log(res)
         return res.json()
@@ -71,41 +54,32 @@ export default function Test() {
   }
 
   return (
-    <main className='pr-12 pl-12'>
+    <main className="pr-12 pl-12">
       <h1>Sanity Test Page</h1>
-      <section className='flex items-center justify-center flex-col'>
-        <h2 className='mb-5'>{`logged in User name : ${session?.user?.name}`}</h2>
-        <h2 className='mb-5'>{`logged in User email : ${session?.user?.email}`}</h2>
+      <section className="flex items-center justify-center flex-col">
+        <h2 className="mb-5">{`logged in User name : ${session?.user?.name}`}</h2>
+        <h2 className="mb-5">{`logged in User email : ${session?.user?.email}`}</h2>
         {/*  eslint-disable-next-line @next/next/no-img-element */}
-        <img
-          src={`${session?.user?.image}`}
-          alt='user image'
-          className='w-full max-w-[60px] rounded-[30px]'
-        />
+        <img src={`${session?.user?.image}`} alt="user image" className="w-full max-w-[60px] rounded-[30px]" />
       </section>
-      <section className='mt-12'>
+      <section className="mt-12">
         <h3>Add Expense form</h3>
         <form onSubmit={addExpense}>
           {/* selector로 카테고리 목록을 제공해주거나 추가할 수 있어야 합니다. */}
-          <input type='text' placeholder='enter a category' />
-          <input type='text' placeholder='enter a amount' />
-          <input type='date' />
-          <input
-            className='pl-5 cursor-pointer'
-            type='submit'
-            value='Add Expense'
-          />
+          <input type="text" placeholder="enter a category" />
+          <input type="text" placeholder="enter a amount" />
+          <input type="date" />
+          <input className="pl-5 cursor-pointer" type="submit" value="Add Expense" />
         </form>
       </section>
-      <section className='mt-12'>
+      <section className="mt-12">
         <h3>get expenses by search query</h3>
         <p>
-          <strong>모든 유저의 비용 중 search query와 일치하는 경우</strong>를
-          가져옵니다.
+          <strong>모든 유저의 비용 중 search query와 일치하는 경우</strong>를 가져옵니다.
         </p>
         <form onSubmit={getAllExpensesByCategory}>
-          <input type='text' placeholder='enter a search query' />
-          <input className='pl-5 cursor-pointer' type='submit' value='search' />
+          <input type="text" placeholder="enter a search query" />
+          <input className="pl-5 cursor-pointer" type="submit" value="search" />
         </form>
         <ul>
           {allUserExpenses &&
