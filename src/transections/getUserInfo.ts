@@ -19,11 +19,10 @@ export type UserInfoResponse = {
   image: string
 }
 
-export default async function getUserByEamilTransaction(email: string) {
+export async function getUserByEamilTransaction(email: string) {
   try {
     const userInfo: UserInfo[] = await client.fetch(`*[_type == "${YOLO_USER_DOC_TYPE}" && email == "${email}"]`)
     if (userInfo.length !== 1) throw new Error('증복 가입된 이메일 입니다. 관리자에게 문의해주세요.')
-
     const userInfoResponse: UserInfoResponse = {
       userId: userInfo[0]._id,
       name: userInfo[0].name,

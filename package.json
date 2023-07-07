@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "dev": "cross-env NODE_ENV=development next dev",
-    "vercel:dev": "cross-env NODE_ENV=development vercel dev", 
+    "vercel:dev": "cross-env NODE_ENV=development vercel dev",
     "vercel:prod": "vercel --prod",
     "build": "next build",
     "start": "next start",
@@ -20,6 +20,7 @@
     "autoprefixer": "10.4.14",
     "axios": "^1.4.0",
     "cross-env": "^7.0.3",
+    "dayjs": "^1.11.9",
     "eslint": "8.44.0",
     "eslint-config-next": "13.4.8",
     "next": "13.4.8",
