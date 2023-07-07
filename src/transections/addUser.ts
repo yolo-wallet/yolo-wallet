@@ -8,7 +8,7 @@ type User = {
   image: string
 }
 
-export default async function addUser({ id, name, email, image }: User) {
+export async function addUser({ id, name, email, image }: User) {
   try {
     return await client.createIfNotExists({
       _id: id,
