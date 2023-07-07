@@ -12,6 +12,7 @@ export default {
       title: 'Email',
       name: 'email',
       type: 'string',
+      validation: (Rule) => Rule.email(),
     },
     {
       title: 'Image',

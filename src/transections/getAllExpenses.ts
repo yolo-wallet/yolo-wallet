@@ -20,10 +20,11 @@ export type ExpenseResponse = {
   amount: number
   category: string
 }
-export default async function getAllExpensesByCategoryTransaction(category: string) {
+export default async function getAllExpensesByCategoryTransaction(category: string, userId: string) {
   try {
-    // todo : filter 쿼리 추가하기
-    const expenses = await client.fetch(`*[_type == "${YOLO_USER_EXPENSES_DOC_TYPE}"]`)
+    // prettier-ignore
+    const query = `*[_type == "${YOLO_USER_EXPENSES_DOC_TYPE}" ${userId ? `&& user._ref == "${userId}"` : ''} ${category ? `&& category == "${category}"` : ''}]`
+    const expenses = await client.fetch(query)
     return expenses
       .map((expense: Expense) => {
         return {
@@ -36,6 +37,7 @@ export default async function getAllExpensesByCategoryTransaction(category: stri
       })
       .filter((expense: ExpenseResponse) => {
         if (!category) return expense
+
         return expense.category === category
       })
   } catch (error) {

@@ -10,16 +10,14 @@ type User = {
 
 export default async function addUser({ id, name, email, image }: User) {
   try {
-    await client.createIfNotExists({
+    return await client.createIfNotExists({
       _id: id,
       _type: YOLO_USER_DOC_TYPE,
       name,
       email,
       image
     })
-    return true
   } catch (error) {
     console.error(error)
-    return false
   }
 }

@@ -11,6 +11,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
 async function getAllExpensesByCategory(req: NextApiRequest, res: NextApiResponse) {
   const category = req.query.q as string
-  const response = await getAllExpensesByCategoryTransaction(category)
+  const userId = req.query.userId ? (req.query.userId as string) : ''
+  const response = await getAllExpensesByCategoryTransaction(category, userId)
   return response
 }
