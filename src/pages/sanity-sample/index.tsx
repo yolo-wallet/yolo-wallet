@@ -1,4 +1,5 @@
-import { ExpenseResponse } from '@/transections/getAllExpenses'
+import api from '@/clientAPI'
+import type { ExpenseResponse } from '@/transections/getAllExpenses'
 import { useSession } from 'next-auth/react'
 import { useState } from 'react'
 
@@ -8,8 +9,7 @@ export default function Test() {
 
   function addExpense(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault()
-    // * form에서 데이터를 가져오는 얘시입니다. 로직은 대충 짰으니까 신경쓰지마세요!
-    console.log('add expense')
+
     const data = Array.from((e.target as HTMLFormElement).querySelectorAll('input'))
       .map((el, i) => {
         switch (i) {
@@ -29,28 +29,18 @@ export default function Test() {
       amount: data[1],
       date: data[2]
     }
-
-    console.log('expenseForm : ', expenseForm)
   }
 
-  function getAllExpensesByCategory(e: React.FormEvent<HTMLFormElement>) {
+  async function getAllExpensesByCategory(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault()
     const searchQuery = (e.target as HTMLFormElement).querySelector('input')!.value
-    fetch(`https://yolo-wallet.vercel.app/api/expenses/search?q=${searchQuery}`, {
+    const { data } = await api(`/api/expenses/search?q=${searchQuery}`, {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json'
       }
     })
-      .then((res) => {
-        console.log(res)
-        return res.json()
-      })
-      .then((data) => {
-        console.log('RESPONSE DATA :', data)
-        setAllUserExpenses(data)
-      })
-      .catch((err) => console.log(err))
+    setAllUserExpenses(data)
   }
 
   return (

@@ -9,12 +9,10 @@
       IE11을 지원하지 않아도 되기 떄문에 ES6 === ES2015을 사용
     */
     "target": "ES2015",
-
     /*
       lib을 선언하지 않으면 기본적으로 "target"에서 default로 제공해주는 라이브러리르 사용
     */
     // "lib": ["dom", "dom.iterable", "esnext"],
-
     /*
       Allow JavaScript files to be a part of your program. 
       Use the 'checkJS' option to get errors from these files
@@ -46,7 +44,6 @@
       ECMA Script 최신 버전 방식임
     */
     "module": "esnext",
-
     /*
       모듈의 위치를 찾아가는데의 방식(전략)을 지정
       "node"시 index.html 생략하는 방식으로 제일 융통성있는 방식임
@@ -67,9 +64,22 @@
       alias 지정
     */
     "paths": {
-      "@/*": ["./src/*"]
-    }
+      "@/*": [
+        "./src/*"
+      ]
+    },
+    "lib": [
+      "dom",
+      "dom.iterable",
+      "esnext"
+    ]
   },
-  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx"],
-  "exclude": ["node_modules"]
+  "include": [
+    "next-env.d.ts",
+    "**/*.ts",
+    "**/*.tsx"
+  ],
+  "exclude": [
+    "node_modules"
+  ]
 }
