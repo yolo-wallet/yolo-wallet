@@ -6,7 +6,6 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     const categories = await getCategoryByUserId(req)
     return res.status(200).json(categories)
   }
-  return res.status(200).send('Hi')
 }
 
 async function getCategoryByUserId(req: NextApiRequest) {

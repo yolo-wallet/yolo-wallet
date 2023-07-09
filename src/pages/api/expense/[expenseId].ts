@@ -1,8 +1,7 @@
 import { NextApiRequest, NextApiResponse } from 'next'
 import { editExepnseByIdTransaction } from '@/transections/editExpense'
 import { deleteExepnseByIdTransaction } from '@/transections/deleteExpense'
-import { addExpeneseTransaction } from '@/transections/addExpense'
-import { EditExpense, ExpenseRequestBody } from '@/types/api'
+import type { EditExpense } from '@/types/api'
 
 export type EditExpenseByIdRequestBody = {
   category?: string
@@ -11,12 +10,6 @@ export type EditExpenseByIdRequestBody = {
 }
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
-  if (req.method === 'POST') {
-    const responseMessage = await addExpense(req)
-    if (responseMessage.code) return res.status(400).send(responseMessage)
-    return res.status(201).send(responseMessage)
-  }
-
   if (req.method === 'PUT') {
     const responseMessage = await editExpenseById(req)
     if (responseMessage.code) return res.status(400).send(responseMessage)
@@ -26,14 +19,8 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   if (req.method === 'DELETE') {
     const reponseMessage = await deleteExpenseById(req)
     if (reponseMessage.code) return res.status(400).send(reponseMessage)
-    return res.status(204).json(reponseMessage)
+    return res.status(200).json(reponseMessage)
   }
-  return res.status(200).send('foo')
-}
-
-async function addExpense(req: NextApiRequest) {
-  const expenseRequestBody: ExpenseRequestBody = req.body
-  return await addExpeneseTransaction(expenseRequestBody)
 }
 
 async function deleteExpenseById(req: NextApiRequest) {

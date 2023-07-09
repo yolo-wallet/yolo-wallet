@@ -1,5 +1,5 @@
-import { YOLO_USER_DOC_TYPE } from './../constants/constants'
 import client from '@/service/sanity'
+import { YOLO_USER_DOC_TYPE } from '@/constants/constants'
 
 type User = {
   id: string

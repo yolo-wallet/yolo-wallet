@@ -2,7 +2,13 @@ import client from '@/service/sanity'
 
 export async function deleteExepnseByIdTransaction(id: string) {
   try {
-    await client.delete(id)
+    const response = await client.delete(id)
+    if (!response.results.length) {
+      return {
+        message: 'Expense not found',
+        code: 22
+      }
+    }
     return {
       message: 'Expense deleted successfully',
       code: 0

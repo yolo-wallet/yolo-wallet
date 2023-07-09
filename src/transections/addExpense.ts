@@ -1,6 +1,6 @@
-import { ExpenseRequestBody } from '@/types/api'
-import { YOLO_USER_EXPENSES_DOC_TYPE } from './../constants/constants'
+import type { ExpenseRequestBody } from '@/types/api'
 import client from '@/service/sanity'
+import { YOLO_USER_EXPENSES_DOC_TYPE } from '@/constants/constants'
 
 export async function addExpeneseTransaction({ amount, category, userId, date }: ExpenseRequestBody) {
   try {
