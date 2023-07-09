@@ -1,6 +1,6 @@
+import type { Expense, ExpenseCalendar, SanityExpenseResponse } from '@/types/api'
 import dayjs from 'dayjs'
 import client from '@/service/sanity'
-import type { Expense, ExpenseCalendar, SanityExpenseResponse } from '@/types/api'
 import { YOLO_USER_EXPENSES_DOC_TYPE } from '@/constants/constants'
 
 export async function getExpensesCalendarTransaction(year: string, month: string, userId: string) {
@@ -34,6 +34,6 @@ export async function getExpensesCalendarTransaction(year: string, month: string
     return expenseCalendar
   } catch (error) {
     console.error(error)
-    return []
+    return {}
   }
 }

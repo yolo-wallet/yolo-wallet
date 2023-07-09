@@ -1,8 +1,8 @@
+import type { Expense, ExpensePeriod, SanityExpenseResponse } from '@/types/api'
 import dayjs from 'dayjs'
 import weekOfYear from 'dayjs/plugin/weekOfYear'
-import { YOLO_USER_EXPENSES_DOC_TYPE } from './../constants/constants'
+import { YOLO_USER_EXPENSES_DOC_TYPE } from '@/constants/constants'
 import client from '@/service/sanity'
-import type { Expense, ExpensePeriod, SanityExpenseResponse } from '@/types/api'
 
 dayjs.extend(weekOfYear)
 

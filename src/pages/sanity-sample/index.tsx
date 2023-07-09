@@ -1,9 +1,16 @@
+import { useState } from 'react'
+import Link from 'next/link'
+import dayjs from 'dayjs'
+import type {
+  EditExpense,
+  Expense,
+  ExpenseCalendar,
+  ExpensePeriod,
+  ExpenseSummary,
+  ExpenseRequestBody
+} from '@/types/api'
 import api from '@/clientAPI'
 import useUserInfo from '@/hooks/useUserInfo'
-import dayjs from 'dayjs'
-import type { EditExpense, Expense, ExpenseCalendar, ExpensePeriod, ExpenseSummary } from '@/types/api'
-import { ExpenseRequestBody } from '@/types/api'
-import { useState } from 'react'
 
 // ! Warnning
 // ! API를 사용하기 편하게 예시로 만들어 놓은 페이지 입니다.
@@ -45,14 +52,19 @@ export default function Test() {
         'Content-Type': 'application/json'
       },
       data: JSON.stringify(expenseForm)
-    }).finally(() => {
-      window.location.reload()
     })
+      .then((res) => {
+        alert(res.data.message)
+      })
+      .catch((error) => {
+        alert(error.response.data.message)
+      })
   }
   // * 2. 소비 품목 목록 API
   async function getCategoryByUserId(e: React.MouseEvent<HTMLButtonElement, MouseEvent>) {
     e.preventDefault()
     const { data } = await api(`/api/categories?userId=${userInfo.userId}`)
+    console.log(data)
     setCategory(data)
   }
 
@@ -71,6 +83,7 @@ export default function Test() {
         'Content-Type': 'application/json'
       }
     })
+    console.log('검색어에 해당하는 소비 항목 및 금액 조회 API 응답 :', data)
     setAllUserExpenses(data)
   }
 
@@ -81,6 +94,7 @@ export default function Test() {
     const { data }: { data: ExpenseSummary[] } = await api(
       `/api/expenses/summary?period=${period}&userId=${userInfo.userId}`
     )
+    console.log('일별, 주별, 월별 소비 조회 API 응답 : ', data)
     setUserExpensesByDate(data)
   }
 
@@ -108,9 +122,13 @@ export default function Test() {
         'Content-Type': 'application/json'
       },
       data: JSON.stringify(restForm)
-    }).finally(() => {
-      window.location.reload()
     })
+      .then((res) => {
+        alert(res.data.message)
+      })
+      .catch((error) => {
+        alert(error.response.data.message)
+      })
   }
 
   // * 6. 소비 기록 삭제 API
@@ -119,9 +137,13 @@ export default function Test() {
     const expenseId = (e.target as HTMLFormElement).querySelector('input')!.value
     api(`/api/expense/${expenseId}`, {
       method: 'DELETE'
-    }).finally(() => {
-      window.location.reload()
     })
+      .then((res) => {
+        alert(res.data.message)
+      })
+      .catch((error) => {
+        alert(error.response.data.message)
+      })
   }
 
   // * 7. 소비 기록 달력 호출 API
@@ -135,13 +157,16 @@ export default function Test() {
         method: 'GET'
       }
     )
+    console.log('소비 기록 달력 호출 API 응답 :', data)
     setExpenseCalendar(data)
   }
   if (isLoading) return <div>loading...</div>
 
   return (
     <main className="pr-12 pl-12 pb-32">
-      <h1 className="text-4xl">Sanity Test Page</h1>
+      <h1 className="text-4xl">
+        <Link href="/">Sanity Test Page</Link>
+      </h1>
       <section className="flex items-center justify-center flex-col">
         <h2 className="mb-5">{`logged in User name : ${userInfo.name}`}</h2>
         <h2 className="mb-5">{`logged in User email : ${userInfo.email}`}</h2>
@@ -173,7 +198,7 @@ export default function Test() {
       <section className="mt-12">
         <h3 className="text-2xl">수정 하기</h3>
         <form onSubmit={editExpense}>
-          <input type="text" placeholder="id" required />
+          <input type="text" placeholder="id" />
           <input type="text" placeholder="category" />
           <input type="text" placeholder="amount" />
           <input type="date" />
@@ -183,7 +208,7 @@ export default function Test() {
       <section className="mt-12">
         <h3 className="text-2xl">삭제하기</h3>
         <form onSubmit={deleteExpense}>
-          <input type="text" placeholder="id" required />
+          <input type="text" placeholder="id" />
           <input className="pl-5 cursor-pointer" type="submit" value="Edit Expense" />
         </form>
       </section>

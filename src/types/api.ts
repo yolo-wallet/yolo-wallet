@@ -1,3 +1,14 @@
+export type SanityUserInfoResponse = {
+  _rev: string
+  _type: string
+  name: string
+  _id: string
+  _updatedAt: string
+  email: string
+  image: string
+  _createdAt: string
+}
+
 export type SanityExpenseResponse = {
   _createdAt: string
   _id: string
@@ -11,6 +22,13 @@ export type SanityExpenseResponse = {
     _ref: string
     _type: string
   }
+}
+
+export type User = {
+  userId: string
+  name: string
+  email: string
+  image: string
 }
 
 export type Expense = {

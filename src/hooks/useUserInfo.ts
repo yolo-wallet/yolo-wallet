@@ -1,14 +1,14 @@
-import api from '@/clientAPI'
-import { UserInfoResponse } from '@/transections/getUserInfo'
-import { useSession } from 'next-auth/react'
 import { useState, useEffect, useCallback } from 'react'
+import { useSession } from 'next-auth/react'
+import api from '@/clientAPI'
+import { SanityUserInfoResponse } from '@/types/api'
 
-type UserInfoHooks = [UserInfo: UserInfoResponse, isLoading: boolean]
+type UserInfoHooks = [UserInfo: SanityUserInfoResponse, isLoading: boolean]
 
 // * 유저 정보를 관리하는 hooks입니다.
 const useUserInfo = () => {
   const [isloading, setIsLoading] = useState(true)
-  const [userInfo, setUserInfo] = useState({} as UserInfoResponse)
+  const [userInfo, setUserInfo] = useState({} as SanityUserInfoResponse)
   const [email, setEmail] = useState('')
   const session = useSession()
 
@@ -17,13 +17,13 @@ const useUserInfo = () => {
     if (process.env.NODE_ENV === 'development') console.log('유저 정보를 가져옵니다....')
     api(`/api/user?email=${email}`).then((res) => {
       setUserInfo(res.data)
+      setIsLoading(false)
     })
   }, [email])
 
   useEffect(() => {
     if (session?.data) setEmail(session.data.user.email ? session.data.user.email : '')
-    if (session.status === 'authenticated') setIsLoading(false)
-    if (session.status === 'loading') setIsLoading(true)
+    if (session.status !== 'authenticated') setIsLoading(true)
   }, [session, session.status, session?.data?.user.email])
 
   useEffect(() => {
