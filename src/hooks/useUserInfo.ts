@@ -1,14 +1,14 @@
 import { useState, useEffect, useCallback } from 'react'
 import { useSession } from 'next-auth/react'
 import api from '@/clientAPI'
-import { SanityUserInfoResponse } from '@/types/api'
+import { User } from '@/types/api'
 
-type UserInfoHooks = [UserInfo: SanityUserInfoResponse, isLoading: boolean]
+type UserInfoHooks = [UserInfo: User, isLoading: boolean]
 
 // * 유저 정보를 관리하는 hooks입니다.
 const useUserInfo = () => {
   const [isloading, setIsLoading] = useState(true)
-  const [userInfo, setUserInfo] = useState({} as SanityUserInfoResponse)
+  const [userInfo, setUserInfo] = useState({} as User)
   const [email, setEmail] = useState('')
   const session = useSession()
 
