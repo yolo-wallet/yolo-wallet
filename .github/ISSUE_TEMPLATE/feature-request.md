@@ -2,7 +2,7 @@
 name: Feature request
 about: Suggest an idea for this project
 title: ''
-labels: enhancement
+labels: to do
 assignees: ''
 
 ---
@@ -28,3 +28,7 @@ assignees: ''
 # 적용되는 페이지 
 
 # 추가 설명
+
+# 예상 시작일
+
+# 예상 완료일
