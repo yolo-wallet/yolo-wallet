@@ -3,7 +3,7 @@ import { ExpensePeriod, ExpenseSummary } from '@/types/api'
 import { create } from 'zustand'
 
 interface CHART {
-  chartData: string[]
+  categories: string[]
   daily: ExpenseSummary[]
   weekly: ExpenseSummary[]
   monthly: ExpenseSummary[]
@@ -21,7 +21,7 @@ export const chartStore = create<CHART>((set) => ({
     const res = await api(`/api/categories?userId=${userId}`)
     console.log(res)
     set({
-      chartData: res.data
+      categories: res.data
     })
   },
 
