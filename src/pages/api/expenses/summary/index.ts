@@ -18,8 +18,12 @@ async function searchAllExpensesByDate(req: NextApiRequest) {
   const userId = req.query.userId
   const period = req.query.period as ExpensePeriod
 
-  if (userId === undefined || typeof userId === 'object') return []
-  if (period !== 'daily' && period !== 'weekly' && period !== 'monthly') return []
+  if (userId === undefined || typeof userId === 'object') {
+    return new Response('Bad Request ', { status: 400 })
+  }
+  if (period !== 'daily' && period !== 'weekly' && period !== 'monthly') {
+    return new Response('Bad Request ', { status: 400 })
+  }
 
   return await getAllExpensesByDateTransaction(userId, period)
 }
