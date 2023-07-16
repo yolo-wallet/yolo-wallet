@@ -1,4 +1,4 @@
-import type { Expense, ExpenseCalendar, SanityExpenseResponse } from '@/types/api'
+import type { Expense, ExpenseCalendar } from '@/types/api'
 import dayjs from 'dayjs'
 import client from '@/service/sanity'
 import { YOLO_USER_EXPENSES_DOC_TYPE } from '@/constants/constants'
@@ -10,16 +10,16 @@ export async function getExpensesCalendarTransaction(year: string, month: string
     const query = `*[_type == "${YOLO_USER_EXPENSES_DOC_TYPE}" && user._ref == "${userId}" && date >= "${currentDate}" && date < "${upTo}"]{
       "id" : _id,
       "userId" : user->._id,
-      "date" : _updatedAt,
-      "amount" : amount,
-      "category" : category
+      date,
+      amount,
+      category
     }`
     const expenses: Expense[] = await client.fetch(query)
 
     const expenseCalendar: ExpenseCalendar = {}
 
+    console.log('expenses', expenses)
     expenses
-
       // .filter((expense) => {
       //   return dayjs(expense.date).format('YYYY') === year && Number(dayjs(expense.date).format('MM')) === Number(month)
       // })
