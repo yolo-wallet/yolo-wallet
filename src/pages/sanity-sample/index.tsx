@@ -268,7 +268,7 @@ export default function Test() {
         Object.entries(expenseCalendar).map(([key, value]) => {
           return (
             <ul key={key}>
-              <h4 className="text-xl">{`${key} 월의 지출 내역`}</h4>
+              <h4 className="text-xl">{`${key} 일의 지출 내역`}</h4>
               {expenseCalendar[key].map((ex) => {
                 return (
                   <li key={ex.id}>
