@@ -62,21 +62,19 @@ export const chartStore = create<CHART>((set) => ({
 
     const date = year.toString() + '-' + (month > 9 ? month.toString() : '0' + month.toString())
 
-    if (res.data[13] === undefined) {
+    if (Object.keys(res.data).length === 0) {
       return
     }
-    const oneMonthCalender = res.data[13].filter((day: Expense) => {
-      return day.date.slice(0, 7) === date
-    })
-    oneMonthCalender.sort((a: Expense, b: Expense): number => {
-      if (a.date < b.date) {
-        return -1
-      } else if (a.date < b.date) {
-        return 1
-      } else {
-        return 0
+    console.log(res.data)
+
+    let oneMonthCalender: Expense[] = []
+    for (const key in res.data) {
+      for (let i = 0; i < res.data[key].length; i++) {
+        console.log(res.data[key][i])
+        oneMonthCalender = [...oneMonthCalender, res.data[key][i]]
       }
-    })
+    }
+    console.log(oneMonthCalender)
 
     let categoriesData: categoriesData[] = []
     const categorie = await api(`/api/categories?userId=${userId}`)

@@ -32,6 +32,7 @@ const chart = () => {
 
   const year = 2023
   const month = 7
+
   const date = year.toString() + '-' + (month > 9 ? month.toString() : '0' + month.toString())
 
   useEffect(() => {
@@ -182,6 +183,8 @@ const chart = () => {
   }
 
   const chartBoxStyle = 'bg-white drop-shadow-lg w-full p-8 mb-8'
+
+  console.log(categoriesData)
 
   return (
     <div className="container mx-auto bg-slate-100 ">
