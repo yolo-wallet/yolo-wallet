@@ -3,6 +3,8 @@ import dynamic from 'next/dynamic'
 import dayjs from 'dayjs'
 import useUserInfo from '@/hooks/useUserInfo'
 
+
+
 const DatePicker = dynamic(() => import('antd').then((lib) => lib.DatePicker), {
   ssr: false,
   loading: () => <div>loading...</div>
@@ -23,11 +25,8 @@ interface Expense {
   date: string
 }
 
-// interface GetCategoriesResponse {
-//   categories: string[]
-// }
 
-export default function LandingPage () {
+export default function LandingPage() {
   const [expenses, setExpenses] = useState<Expense[]>([])
   const [date, setDate] = useState<string | null>(null)
   const [category, setCategory] = useState('')
@@ -35,7 +34,7 @@ export default function LandingPage () {
   const [searchKeyword, setSearchKeyword] = useState('')
   const [userinfo] = useUserInfo()
 
-  useEffect (() => {
+  useEffect(() => {
     fetchExpenses()
   }, [])
 
@@ -67,22 +66,8 @@ export default function LandingPage () {
     }
   }
 
-  // const fetchCategories = async (): Promise<string[]> => {
-  //   try {
-  //     const response = await fetch(`/api/categories?userId=${userinfo.userId}`)
-  //     if (response.ok) {
-  //       const data: GetCategoriesResponse = await response.json()
-  //       return data.categories
-  //     } else {
-  //       console.error('Failed to fetch categories:', response)
-  //     }
-  //   } catch (error) {
-  //     console.error('Failed to fetch categories:', error)
-  //   }
-  //   return []
-  // }
 
-  const handleDateChange = (selectedDate: any) => {
+  const handleDateChange = (selectedDate : any) => {
     setDate(selectedDate?.format('YYYY-MM-DDTHH:mm:ss.SSS[Z]') ?? null)
     console.log(typeof selectedDate)
   }
@@ -141,6 +126,8 @@ export default function LandingPage () {
 
   return (
     <div>
+      <div className='border-2 border-black rounded'>
+
       <form className="flex items-center">
         <DatePicker onChange={handleDateChange} value={date ? dayjs(date) : null} />
         <Input className="w-48" value={category} onChange={handleCategoryChange} placeholder="분류" />
@@ -148,10 +135,11 @@ export default function LandingPage () {
         <div>
           <Button onClick={addExpense}>추가</Button>
         </div>
-      </form>
       <div>
         <Input className="w-48" value={searchKeyword} onChange={handleSearchKeywordChange} placeholder="검색어" />
         <Button onClick={searchExpenses}>검색</Button>
+      </div>
+      </form>
       </div>
 
       <h2>지출 내역 리스트</h2>
