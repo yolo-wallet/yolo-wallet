@@ -39,6 +39,9 @@ export type Expense = {
   date: string
 }
 
+export type ExpenseImage = {
+  image: string
+}
 export type ExpenseSummary = {
   _id: string
   totalAmount: number
