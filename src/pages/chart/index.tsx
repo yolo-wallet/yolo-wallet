@@ -48,61 +48,8 @@ const chart = () => {
     }
   }, [categoriesData])
 
-  const oneMonthDaily = daily.filter((day) => {
-    return day._id.slice(0, 7) === date
-  })
-
-  oneMonthDaily.sort((a: ExpenseSummary, b: ExpenseSummary): number => {
-    if (a._id < b._id) {
-      return -1
-    } else if (a._id > b._id) {
-      return 1
-    } else {
-      return 0
-    }
-  })
-
+  ///////////////////////////////
   const chartData = {
-    labels: oneMonthDaily.map((data) => data._id),
-    datasets: [
-      {
-        label: `${month}월 일별 지출금액 추이`,
-        data: oneMonthDaily.map((data) => data.totalAmount),
-        backgroundColor: ['rgba(238, 102, 121, 1)', 'rgba(98, 181, 229, 1)', 'rgba(255, 198, 0, 1)']
-      }
-    ]
-  }
-
-  const options = {
-    plugins: {
-      legend: {
-        display: false
-      }
-    }
-  }
-
-  const options2 = {
-    plugins: {
-      legend: {
-        display: false
-      }
-    },
-    scales: {
-      x: {
-        display: true,
-        title: {
-          display: true
-        }
-      },
-      y: {
-        display: true,
-
-        suggestedMin: 0
-      }
-    }
-  }
-
-  const chartData2 = {
     labels: categoriesData.map((data) => data.categorie),
     datasets: [
       {
@@ -118,6 +65,33 @@ const chart = () => {
     ]
   }
 
+  ////////////////////////////
+  const oneMonthDaily = daily.filter((day) => {
+    return day._id.slice(0, 7) === date
+  })
+
+  oneMonthDaily.sort((a: ExpenseSummary, b: ExpenseSummary): number => {
+    if (a._id < b._id) {
+      return -1
+    } else if (a._id > b._id) {
+      return 1
+    } else {
+      return 0
+    }
+  })
+
+  const chartData2 = {
+    labels: oneMonthDaily.map((data) => data._id),
+    datasets: [
+      {
+        label: `${month}월 일별 지출금액 추이`,
+        data: oneMonthDaily.map((data) => data.totalAmount),
+        backgroundColor: ['rgba(238, 102, 121, 1)', 'rgba(98, 181, 229, 1)', 'rgba(255, 198, 0, 1)']
+      }
+    ]
+  }
+
+  /////////////////////////////////
   const topCategor = topCategorieData.filter((data) => {
     return data.date.slice(0, 7) === date
   })
@@ -139,23 +113,7 @@ const chart = () => {
     ]
   }
 
-  const undefinedCategorie = undefinedCategorieData.filter((data) => {
-    return data.date.slice(0, 7) === date
-  })
-
-  const chartData4 = {
-    labels: undefinedCategorie.map((data) => data.date),
-    datasets: [
-      {
-        label: `${month}월 미분류 카테고리 지출금액`,
-        data: undefinedCategorie.map((data) => data.amount),
-        backgroundColor: ['rgba(238, 102, 121, 1)', 'rgba(98, 181, 229, 1)', 'rgba(255, 198, 0, 1)'],
-
-        maxBarThickness: 10
-      }
-    ]
-  }
-
+  ////////////////////////////////
   const undefinedData = categoriesData.filter((data) => data.categorie === 'undefined')
 
   const noUndefinedData = categoriesData.filter((data) => data.categorie !== 'undefined')
@@ -165,8 +123,8 @@ const chart = () => {
   }
 
   const noCategorieData = [...undefinedData, { categorie: 'total', totalAmount: sum }]
-  console.log(noCategorieData)
-  const chartData5 = {
+
+  const chartData4 = {
     labels: noCategorieData.map((data) => data.categorie),
     datasets: [
       {
@@ -182,9 +140,56 @@ const chart = () => {
     ]
   }
 
-  const chartBoxStyle = 'bg-white drop-shadow-lg w-full p-8 mb-8'
+  //////////////////////////////////////
+  const undefinedCategorie = undefinedCategorieData.filter((data) => {
+    return data.date.slice(0, 7) === date
+  })
 
-  console.log(categoriesData)
+  const chartData5 = {
+    labels: undefinedCategorie.map((data) => data.date),
+    datasets: [
+      {
+        label: `${month}월 미분류 카테고리 지출금액`,
+        data: undefinedCategorie.map((data) => data.amount),
+        backgroundColor: ['rgba(238, 102, 121, 1)', 'rgba(98, 181, 229, 1)', 'rgba(255, 198, 0, 1)'],
+
+        maxBarThickness: 10
+      }
+    ]
+  }
+
+  ///////////////////////////////////
+  const Doughnutoptions = {
+    plugins: {
+      legend: {
+        display: false
+      }
+    }
+  }
+
+  const options = {
+    plugins: {
+      legend: {
+        display: false
+      }
+    },
+    scales: {
+      x: {
+        display: true,
+        title: {
+          display: true
+        }
+      },
+      y: {
+        display: true,
+
+        suggestedMin: 0
+      }
+    }
+  }
+
+  //////////////////////////////////
+  const chartBoxStyle = 'bg-white drop-shadow-lg w-full p-8 mb-8'
 
   return (
     <div className="container mx-auto bg-slate-100 ">
@@ -193,7 +198,7 @@ const chart = () => {
           <p className="mb-5 text-lg font-bold">이번 달 지출 카테고리</p>
           <div className="flex items-center justify-around flex-wrap">
             <div>
-              <DoughnutChart chartData={chartData2} options={options} />
+              <DoughnutChart chartData={chartData} options={Doughnutoptions} />
             </div>
             <div>
               <ul>
@@ -216,23 +221,23 @@ const chart = () => {
 
         <div className={chartBoxStyle}>
           <p className="mb-5 text-lg font-bold">이번 달 일일 지출</p>
-          <BarChart chartData={chartData} options={options} />
+          <BarChart chartData={chartData2} options={options} />
           <br />
-          <LineChart chartData={chartData} options={options2} />
+          <LineChart chartData={chartData2} options={options} />
         </div>
 
         <div className={chartBoxStyle}>
           <p className="mb-5 text-lg font-bold">이번 달 TOP1 소비 카테고리</p>
-          <LineChart chartData={chartData3} options={options2} />
+          <LineChart chartData={chartData3} options={options} />
         </div>
         <div className={chartBoxStyle}>
           <p className="mb-5 text-lg font-bold">이번 달 미분류 소비 비율</p>
           <div className="flex items-center justify-around w-full flex-wrap">
             <div>
-              <DoughnutChart chartData={chartData5} options={options} />
+              <DoughnutChart chartData={chartData4} options={Doughnutoptions} />
             </div>
             <div>
-              <BarChart chartData={chartData4} options={options2} />
+              <BarChart chartData={chartData5} options={options} />
             </div>
           </div>
         </div>
