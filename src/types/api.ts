@@ -24,6 +24,13 @@ export type SanityExpenseResponse = {
   }
 }
 
+type RequestBody = {
+  userId : string
+  amount : number
+  category : string
+  date : string
+}
+
 export type User = {
   userId: string
   name: string
