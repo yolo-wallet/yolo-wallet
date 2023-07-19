@@ -16,16 +16,7 @@ const chart = () => {
   // 전체 지출 카테고리 그래프
   // 년도별 월별 지출 그래프
 
-  const {
-    getCategories,
-    getExpenses,
-    getCalendar,
-    getCategorieData,
-    daily,
-    topCategorieData,
-    categoriesData,
-    undefinedCategorieData
-  } = chartStore()
+  const { getCategories, getExpenses, getCalendar, getCategorieData, daily, categoriesData } = chartStore()
 
   const [userInfo] = useUserInfo()
   const userId = userInfo.userId
@@ -72,6 +63,23 @@ const chart = () => {
     ]
   }
 
+  const chartData2 = {
+    labels: categoriesData.map((data) => data.categorie),
+    datasets: [
+      {
+        label: `${month}월 일별 지출금액`,
+        data: categoriesData.map((data) => data.totalAmount),
+        backgroundColor: ['rgba(238, 102, 121, 1)', 'rgba(98, 181, 229, 1)', 'rgba(255, 198, 0, 1)'],
+
+        borderWidth: 5,
+        cutout: '70%',
+        borderRadius: 2,
+        hoverBorderWidth: 0
+      }
+    ]
+  }
+
+  ////////////////////////////////
   const options = {
     plugins: {
       legend: {
@@ -100,87 +108,7 @@ const chart = () => {
       }
     }
   }
-
-  const chartData2 = {
-    labels: categoriesData.map((data) => data.categorie),
-    datasets: [
-      {
-        label: `${month}월 일별 지출금액`,
-        data: categoriesData.map((data) => data.totalAmount),
-        backgroundColor: ['rgba(238, 102, 121, 1)', 'rgba(98, 181, 229, 1)', 'rgba(255, 198, 0, 1)'],
-
-        borderWidth: 5,
-        cutout: '70%',
-        borderRadius: 2,
-        hoverBorderWidth: 0
-      }
-    ]
-  }
-
-  const topCategor = topCategorieData.filter((data) => {
-    return data.date.slice(0, 7) === date
-  })
-
-  let categori = ''
-  if (topCategor.length > 0) {
-    categori = topCategor[0].category
-  }
-  const chartData3 = {
-    labels: topCategor.map((data) => data.date),
-    datasets: [
-      {
-        label: `${month}월 최대 지출 카테고리(${categori}) 지출금액`,
-        data: topCategor.map((data) => data.amount),
-        backgroundColor: ['rgba(238, 102, 121, 1)', 'rgba(98, 181, 229, 1)', 'rgba(255, 198, 0, 1)'],
-
-        borderWidth: 2
-      }
-    ]
-  }
-
-  const undefinedCategorie = undefinedCategorieData.filter((data) => {
-    return data.date.slice(0, 7) === date
-  })
-
-  const chartData4 = {
-    labels: undefinedCategorie.map((data) => data.date),
-    datasets: [
-      {
-        label: `${month}월 미분류 카테고리 지출금액`,
-        data: undefinedCategorie.map((data) => data.amount),
-        backgroundColor: ['rgba(238, 102, 121, 1)', 'rgba(98, 181, 229, 1)', 'rgba(255, 198, 0, 1)'],
-
-        maxBarThickness: 10
-      }
-    ]
-  }
-
-  const undefinedData = categoriesData.filter((data) => data.categorie === 'undefined')
-
-  const noUndefinedData = categoriesData.filter((data) => data.categorie !== 'undefined')
-  let sum = 0
-  for (let i = 0; i < noUndefinedData.length; i++) {
-    sum = sum + noUndefinedData[i].totalAmount
-  }
-
-  const noCategorieData = [...undefinedData, { categorie: 'total', totalAmount: sum }]
-  console.log(noCategorieData)
-  const chartData5 = {
-    labels: noCategorieData.map((data) => data.categorie),
-    datasets: [
-      {
-        label: `${month}월 미분류 소비 비율`,
-        data: noCategorieData.map((data) => data.totalAmount),
-        backgroundColor: ['rgba(238, 102, 121, 1)', 'rgba(98, 181, 229, 1)', 'rgba(255, 198, 0, 1)'],
-
-        borderWidth: 5,
-        cutout: '70%',
-        borderRadius: 2,
-        hoverBorderWidth: 0
-      }
-    ]
-  }
-
+  ////////////////////////////////
   const chartBoxStyle = 'bg-white drop-shadow-lg w-full p-8 mb-8'
 
   return (
@@ -216,22 +144,6 @@ const chart = () => {
           <BarChart chartData={chartData} options={options} />
           <br />
           <LineChart chartData={chartData} options={options2} />
-        </div>
-
-        <div className={chartBoxStyle}>
-          <p className="mb-5 text-lg font-bold">이번 달 TOP1 소비 카테고리</p>
-          <LineChart chartData={chartData3} options={options2} />
-        </div>
-        <div className={chartBoxStyle}>
-          <p className="mb-5 text-lg font-bold">이번 달 미분류 소비 비율</p>
-          <div className="flex items-center justify-around w-full flex-wrap">
-            <div>
-              <DoughnutChart chartData={chartData5} options={options} />
-            </div>
-            <div>
-              <BarChart chartData={chartData4} options={options2} />
-            </div>
-          </div>
         </div>
       </div>
     </div>

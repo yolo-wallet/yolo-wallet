@@ -13,7 +13,7 @@ interface CHART {
   weekly: ExpenseSummary[]
   monthly: ExpenseSummary[]
   calendar: Expense[]
-  topCategorieData: Expense[]
+  categorieData: Expense[]
   undefinedCategorieData: Expense[]
   categoriesData: categoriesData[]
 
@@ -29,7 +29,7 @@ export const chartStore = create<CHART>((set) => ({
   weekly: [],
   monthly: [],
   calendar: [],
-  topCategorieData: [],
+  categorieData: [],
   undefinedCategorieData: [],
   categoriesData: [],
   getCategories: async (userId: string) => {
@@ -120,7 +120,7 @@ export const chartStore = create<CHART>((set) => ({
       return
     }
     set({
-      topCategorieData: res.data
+      categorieData: res.data
     })
   }
 }))

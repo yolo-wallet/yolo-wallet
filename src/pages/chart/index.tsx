@@ -22,7 +22,7 @@ const chart = () => {
     getCalendar,
     getCategorieData,
     daily,
-    topCategorieData,
+    categorieData,
     categoriesData,
     undefinedCategorieData
   } = chartStore()
@@ -92,7 +92,7 @@ const chart = () => {
   }
 
   /////////////////////////////////
-  const topCategor = topCategorieData.filter((data) => {
+  const topCategor = categorieData.filter((data) => {
     return data.date.slice(0, 7) === date
   })
 
