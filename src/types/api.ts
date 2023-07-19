@@ -43,7 +43,7 @@ export type Expense = {
   userId: string
   category: string
   amount: number
-  date: string
+  date: string | null
 }
 
 export type ExpenseImage = {

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react'
-import dayjs from 'dayjs'
+import dayjs, { Dayjs } from 'dayjs'
 import useUserInfo from '@/hooks/useUserInfo'
 import api from '@/clientAPI'
 import { Expense, ExpenseRequestBody } from '@/types/api'
@@ -36,8 +36,9 @@ export default function LandingPage() {
     fetchExpenses()
   }
 
-  const handleDateChange = (selectedDate: any) => {
-    setDate(selectedDate?.format('YYYY-MM-DDTHH:mm:ss.SSS[Z]') ?? null)
+
+  const handleDateChange = (selectedDate: Dayjs | null) => {
+    setDate(selectedDate?.format('YYYY-MM-DD') ?? null)
   }
 
   const handleCategoryChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -144,7 +145,7 @@ export default function LandingPage() {
     const updatedExpense: Expense = {
       id: selectedExpense.id,
       userId: selectedExpense.userId,
-      amount: parseFloat(amount),
+      amount: parseInt(amount),
       category,
       date
     }
@@ -177,9 +178,9 @@ export default function LandingPage() {
       <ul>
         {expenses.map((expense) => (
           <Card key={expense.id}>
-            <span>{expense.date}</span>
-            <span>{expense.category}</span>
-            <span>{expense.amount}</span>
+            날짜 : <span>{expense.date}</span>
+            분류 : <span>{expense.category}</span>
+            금액 : <span>{expense.amount}</span>
             <Button onClick={() => openModal(expense)}>수정</Button>
             <Button onClick={() => openDeleteModal(expense)}>삭제</Button>
           </Card>
