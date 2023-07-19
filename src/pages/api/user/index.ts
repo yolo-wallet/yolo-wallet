@@ -6,7 +6,6 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     const userInfo = await getUserByEamil(req)
     return res.status(200).json(userInfo)
   }
-  return res.status(200).send('foo')
 }
 
 async function getUserByEamil(req: NextApiRequest) {

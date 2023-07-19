@@ -53,7 +53,6 @@ export default function LandingPage() {
     if (searchKeyword) url += `&q=${encodeURIComponent(searchKeyword)}`
     const { data } = await api(url)
     setExpenses(data)
-    console.log('data : ', data)
   }
 
   const searchExpenses = async (): Promise<void> => {
