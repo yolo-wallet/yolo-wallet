@@ -5,6 +5,8 @@ import client from '@/service/sanity'
 
 export async function getUserByEamilTransaction(email: string) {
   try {
+    if (!email) throw new Error('이메일을 입력해주세요.')
+
     const userInfo: SanityUserInfoResponse[] = await client.fetch(
       `*[_type == "${YOLO_USER_DOC_TYPE}" && email == "${email}"]`
     )
