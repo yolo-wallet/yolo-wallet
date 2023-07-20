@@ -213,7 +213,7 @@ export default function LandingPage() {
             onCancel={closeModal}
             onOk={handleUpdateExpense}
             destroyOnClose
-            wrapClassName="modal-wrapper z-50"
+            okButtonProps={{ style: { background: '#1890ff', borderColor: '#1890ff' } }}
           >
             {selectedExpense && (
               <div className="flex">
@@ -230,7 +230,7 @@ export default function LandingPage() {
             onCancel={closeDeleteModal}
             onOk={handleDeleteExpense}
             destroyOnClose
-            wrapClassName="modal-wrapper z-50"
+            okButtonProps={{ style: { background: '#1890ff', borderColor: '#1890ff' } }}
           >
             <p>정말 삭제하시겠습니까?</p>
           </Modal>
