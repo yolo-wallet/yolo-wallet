@@ -167,12 +167,12 @@ export default function LandingPage() {
           <Input className="w-48" value={category} onChange={handleCategoryChange} placeholder="분류" />
           <Input className="w-48" type="number" value={amount} onChange={handleAmountChange} placeholder="금액" />
           <div>
-            <Button onClick={addExpense}>추가</Button>
+            <Button className='bg-white boder border-gray' onClick={addExpense}>추가</Button>
           </div>
           <div className='flex grow'></div>
           <div>
             <Input className="w-48" value={searchKeyword} onChange={handleSearchKeywordChange} placeholder="검색어" />
-            <Button onClick={searchExpenses}>검색</Button>
+            <Button className='bg-white boder border-gray' onClick={searchExpenses}>검색</Button>
           </div>
         </form>
       </div>
@@ -199,7 +199,7 @@ export default function LandingPage() {
         onCancel={closeModal}
         onOk={handleUpdateExpense}
         destroyOnClose
-        className="z-50"
+        wrapClassName="modal-wrapper z-50"
       >
         {selectedExpense && (
           <div className='flex'>
@@ -216,7 +216,7 @@ export default function LandingPage() {
         onCancel={closeDeleteModal}
         onOk={handleDeleteExpense}
         destroyOnClose
-        className="z-50"
+        wrapClassName="modal-wrapper z-50"
       >
         <p>정말 삭제하시겠습니까?</p>
       </Modal>
