@@ -42,19 +42,11 @@ export const chartStore = create<CHART>((set) => ({
   getExpenses: async (period: ExpensePeriod, userId: string) => {
     const res = await api(`/api/expenses/summary?period=${period}&userId=${userId}`)
 
-    if (period === 'daily') {
-      set({
-        daily: res.data
-      })
-    } else if (period === 'weekly') {
-      set({
-        weekly: res.data
-      })
-    } else if (period === 'monthly') {
-      set({
-        monthly: res.data
-      })
-    }
+    let expenses: {
+      [key in ExpensePeriod]?: ExpenseSummary[]
+    } = {}
+    expenses[period] = res.data
+    set(expenses)
   },
 
   getCalendar: async (year: number, month: number, userId: string) => {
@@ -66,19 +58,24 @@ export const chartStore = create<CHART>((set) => ({
 
     let oneMonthCalender: Expense[] = []
     for (const key in res.data) {
-      for (let i = 0; i < res.data[key].length; i++) {
-        oneMonthCalender = [...oneMonthCalender, res.data[key][i]]
-      }
+      oneMonthCalender = oneMonthCalender.concat(res.data[key])
     }
 
-    let categoriesData: categoriesData[] = []
-    const categorie = await api(`/api/categories?userId=${userId}`)
+    let categories: string[] = [
+      ...new Set(
+        oneMonthCalender.map((data) => {
+          return data.category
+        })
+      )
+    ]
 
-    for (let i = 0; i < categorie.data.length; i++) {
-      categoriesData[i] = { categorie: categorie.data[i], totalAmount: 0 }
+    let categoriesData: categoriesData[] = []
+
+    for (let i = 0; i < categories.length; i++) {
+      categoriesData[i] = { categorie: categories[i], totalAmount: 0 }
 
       oneMonthCalender.map((data: Expense) => {
-        if (data.category === categorie.data[i]) {
+        if (data.category === categories[i]) {
           categoriesData[i].totalAmount = categoriesData[i].totalAmount + data.amount
         }
       })

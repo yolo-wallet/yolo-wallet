@@ -2,12 +2,13 @@ import useUserInfo from '@/hooks/useUserInfo'
 import { chartStore } from '@/store/chartStore'
 import { ExpenseSummary } from '@/types/api'
 import React, { useEffect } from 'react'
+import dayjs from 'dayjs'
 
 import BarChart from '@/components/chart/BarChart'
 import LineChart from '@/components/chart/LineChart'
 import DoughnutChart from '@/components/chart/DoughnutChart'
 
-const chart = () => {
+export default function chart() {
   // 구현할 기능 목록
   // 이번 달 카테고리 별 지출 금액 원형그래프
   // 이번 달 전체 소비 추이 직선그래프
@@ -30,10 +31,12 @@ const chart = () => {
   const [userInfo] = useUserInfo()
   const userId = userInfo.userId
 
-  const year = 2023
-  const month = 7
+  const date = dayjs(new Date()).format('YYYY-MM-DD') // '2023-07-02'
+  const year = dayjs(date).year() // 2023
+  const month = dayjs(date).month() + 1 // 7
+  const yearMonth = date.slice(0, 7)
 
-  const date = year.toString() + '-' + (month > 9 ? month.toString() : '0' + month.toString())
+  // const date = year.toString() + '-' + (month > 9 ? month.toString() : '0' + month.toString())
 
   useEffect(() => {
     getCategories(userId)
@@ -66,8 +69,9 @@ const chart = () => {
   }
 
   ////////////////////////////
+
   const oneMonthDaily = daily.filter((day) => {
-    return day._id.slice(0, 7) === date
+    return day._id.slice(0, 7) === yearMonth
   })
 
   oneMonthDaily.sort((a: ExpenseSummary, b: ExpenseSummary): number => {
@@ -92,8 +96,9 @@ const chart = () => {
   }
 
   /////////////////////////////////
+
   const topCategor = categorieData.filter((data) => {
-    return data.date.slice(0, 7) === date
+    return data.date.slice(0, 7) === yearMonth
   })
 
   let categori = ''
@@ -141,9 +146,12 @@ const chart = () => {
   }
 
   //////////////////////////////////////
+  console.log(undefinedCategorieData)
   const undefinedCategorie = undefinedCategorieData.filter((data) => {
-    return data.date.slice(0, 7) === date
+    return data.date.slice(0, 7) === yearMonth
   })
+
+  console.log(undefinedCategorie)
 
   const chartData5 = {
     labels: undefinedCategorie.map((data) => data.date),
@@ -210,7 +218,7 @@ const chart = () => {
                        min-w-[300px]"
                     >
                       <p>{data.categorie}</p>
-                      <p>{data.totalAmount}</p>
+                      <p>{data.totalAmount.toLocaleString('ko-KR', { style: 'currency', currency: 'KRW' })}</p>
                     </li>
                   )
                 })}
@@ -245,5 +253,3 @@ const chart = () => {
     </div>
   )
 }
-
-export default chart
