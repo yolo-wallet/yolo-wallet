@@ -1,37 +1,13 @@
 import React, { useState, useEffect } from 'react'
-import dynamic from 'next/dynamic'
-import dayjs from 'dayjs'
+import dayjs, { Dayjs } from 'dayjs'
 import useUserInfo from '@/hooks/useUserInfo'
 import api from '@/clientAPI'
-
-const DatePicker = dynamic(() => import('antd').then((lib) => lib.DatePicker), {
-  ssr: false,
-  loading: () => <div>loading...</div>
-})
-const Input = dynamic(() => import('antd').then((lib) => lib.Input), {
-  ssr: false,
-  loading: () => <div>loading...</div>
-})
-const Button = dynamic(() => import('antd').then((lib) => lib.Button), {
-  ssr: false,
-  loading: () => <div>loading...</div>
-})
-const Modal = dynamic(() => import('antd').then((lib) => lib.Modal), {
-  ssr: false,
-  loading: () => <div>loading...</div>
-})
-const Card = dynamic(() => import('antd').then((lib) => lib.Card), {
-  ssr: false,
-  loading: () => <div>loading...</div>
-})
-
-interface Expense {
-  id: string
-  userId: string
-  amount: number
-  category: string
-  date: string | null
-}
+import { Expense, ExpenseRequestBody } from '@/types/api'
+import { DatePicker } from './Landing.tsx/DatePicker'
+import { Input } from './Landing.tsx/Input'
+import { Button } from './Landing.tsx/Button'
+import { Card } from './Landing.tsx/Card'
+import { Modal } from './Landing.tsx/Modal'
 
 export default function LandingPage() {
   const [expenses, setExpenses] = useState<Expense[]>([])
@@ -39,41 +15,30 @@ export default function LandingPage() {
   const [category, setCategory] = useState('')
   const [amount, setAmount] = useState('')
   const [searchKeyword, setSearchKeyword] = useState('')
-  const [userinfo] = useUserInfo()
+  const [userinfo, isLoading] = useUserInfo()
   const [isModalVisible, setIsModalVisible] = useState(false)
   const [selectedExpense, setSelectedExpense] = useState<Expense | null>(null)
   const [isDeleteModalVisible, setIsDeleteModalVisible] = useState(false)
 
   useEffect(() => {
+    if (isLoading || !userinfo.name) return
     fetchExpenses()
-  }, [])
+  }, [userinfo.userId, isLoading])
 
-  const fetchExpenses = async (): Promise<void> => {
+  const fetchExpenses = async () => {
     let url = `/api/expenses/search?userId=${userinfo.userId}`
     if (searchKeyword) url += `&q=${encodeURIComponent(searchKeyword)}`
     const { data } = await api(url)
     setExpenses(data)
   }
 
-  const searchExpenses = async (): Promise<void> => {
+  const searchExpenses = async () => {
     fetchExpenses()
-    /*
-    try {
-      const response = await fetch(`/api/expenses/search?q=${searchKeyword}&userId=${userinfo.userId}`)
-      if (response.ok) {
-        const data = await response.json()
-        setExpenses(data)
-      } else {
-        console.error('Failed to search expenses:', response)
-      }
-    } catch (error) {
-      console.error('Failed to search expenses:', error)
-    }
-    */
   }
 
-  const handleDateChange = (selectedDate: any) => {
-    setDate(selectedDate?.format('YYYY-MM-DDTHH:mm:ss.SSS[Z]') ?? null)
+
+  const handleDateChange = (selectedDate: Dayjs | null) => {
+    setDate(selectedDate?.format('YYYY-MM-DD') ?? null)
   }
 
   const handleCategoryChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -93,15 +58,12 @@ export default function LandingPage() {
       alert('날짜, 분류, 금액을 모두 입력해주세요.')
       return
     }
-
-    const newExpense: Expense = {
-      id: '',
+    const newExpense: ExpenseRequestBody = {
       userId: userinfo.userId,
-      amount: parseFloat(amount),
+      amount: parseInt(amount),
       category,
       date
     }
-
     try {
       const response = await fetch('/api/expense', {
         method: 'POST',
@@ -111,14 +73,11 @@ export default function LandingPage() {
         body: JSON.stringify(newExpense)
       })
 
-      if (response.status === 201) {
+      if (response.ok) {
         setDate(null)
         setCategory('')
         setAmount('')
         fetchExpenses()
-      } else {
-        console.error('Failed to add expense:', response)
-        alert('소비 기록 추가에 실패했습니다.')
       }
     } catch (error) {
       console.error('Failed to add expense:', error)
@@ -135,13 +94,9 @@ export default function LandingPage() {
         },
         body: JSON.stringify(updatedExpense)
       })
-
-      if (response.status === 200) {
+      if (response.ok) {
         fetchExpenses()
         closeModal()
-      } else {
-        console.error('Failed to update expense:', response)
-        alert('소비 기록 수정에 실패했습니다.')
       }
     } catch (error) {
       console.error('Failed to update expense:', error)
@@ -154,13 +109,9 @@ export default function LandingPage() {
       const response = await fetch(`/api/expense/${expenseId}`, {
         method: 'DELETE'
       })
-
-      if (response.status === 200) {
+      if (response.ok) {
         fetchExpenses()
         closeDeleteModal()
-      } else {
-        console.error('Failed to delete expense:', response)
-        alert('소비 기록 삭제에 실패했습니다.')
       }
     } catch (error) {
       console.error('Failed to delete expense:', error)
@@ -194,17 +145,15 @@ export default function LandingPage() {
     const updatedExpense: Expense = {
       id: selectedExpense.id,
       userId: selectedExpense.userId,
-      amount: parseFloat(amount),
+      amount: parseInt(amount),
       category,
       date
     }
-
     updateExpense(selectedExpense.id, updatedExpense)
   }
 
   const handleDeleteExpense = () => {
     if (!selectedExpense) return
-
     deleteExpense(selectedExpense.id)
   }
 
@@ -229,9 +178,9 @@ export default function LandingPage() {
       <ul>
         {expenses.map((expense) => (
           <Card key={expense.id}>
-            <span>{expense.date}</span>
-            <span>{expense.category}</span>
-            <span>{expense.amount}</span>
+            날짜 : <span>{expense.date}</span>
+            분류 : <span>{expense.category}</span>
+            금액 : <span>{expense.amount}</span>
             <Button onClick={() => openModal(expense)}>수정</Button>
             <Button onClick={() => openDeleteModal(expense)}>삭제</Button>
           </Card>
