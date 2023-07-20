@@ -29,13 +29,15 @@ export default function LandingPage() {
     let url = `/api/expenses/search?userId=${userinfo.userId}`
     if (searchKeyword) url += `&q=${encodeURIComponent(searchKeyword)}`
     const { data } = await api(url)
-    setExpenses(data)
+    const sortedExpenses = data.sort((a, b) => {
+      return dayjs(b.date).valueOf() - dayjs(a.date).valueOf()
+    })
+    setExpenses(sortedExpenses)
   }
 
   const searchExpenses = async () => {
     fetchExpenses()
   }
-
 
   const handleDateChange = (selectedDate: Dayjs | null) => {
     setDate(selectedDate?.format('YYYY-MM-DD') ?? null)
@@ -158,15 +160,16 @@ export default function LandingPage() {
   }
 
   return (
-    <div>
+    <div className='h-screen max-w-[1200px] w-full m-auto p-8'>
       <div>
-        <form className="flex items-center">
+        <form className="flex items-center p-5 border bg-forsythia rounded-full">
           <DatePicker onChange={handleDateChange} value={date ? dayjs(date) : null} />
           <Input className="w-48" value={category} onChange={handleCategoryChange} placeholder="분류" />
           <Input className="w-48" type="number" value={amount} onChange={handleAmountChange} placeholder="금액" />
           <div>
             <Button onClick={addExpense}>추가</Button>
           </div>
+          <div className='flex grow'></div>
           <div>
             <Input className="w-48" value={searchKeyword} onChange={handleSearchKeywordChange} placeholder="검색어" />
             <Button onClick={searchExpenses}>검색</Button>
@@ -178,11 +181,14 @@ export default function LandingPage() {
       <ul>
         {expenses.map((expense) => (
           <Card key={expense.id}>
-            날짜 : <span>{expense.date}</span>
-            분류 : <span>{expense.category}</span>
-            금액 : <span>{expense.amount}</span>
+            <div className="flex gap-2 items-center">
+              날짜 :<div>{expense.date}</div> |
+              분류 :<div>{expense.category}</div> |
+              금액 :<div>{expense.amount}</div>
+              <div className='flex grow'></div>
             <Button onClick={() => openModal(expense)}>수정</Button>
             <Button onClick={() => openDeleteModal(expense)}>삭제</Button>
+            </div>
           </Card>
         ))}
       </ul>
@@ -193,9 +199,10 @@ export default function LandingPage() {
         onCancel={closeModal}
         onOk={handleUpdateExpense}
         destroyOnClose
+        className="z-50"
       >
         {selectedExpense && (
-          <div>
+          <div className='flex'>
             <DatePicker onChange={handleDateChange} value={date ? dayjs(date) : null} />
             <Input className="w-48" value={category} onChange={handleCategoryChange} placeholder="분류" />
             <Input className="w-48" type="number" value={amount} onChange={handleAmountChange} placeholder="금액" />
@@ -209,6 +216,7 @@ export default function LandingPage() {
         onCancel={closeDeleteModal}
         onOk={handleDeleteExpense}
         destroyOnClose
+        className="z-50"
       >
         <p>정말 삭제하시겠습니까?</p>
       </Modal>
