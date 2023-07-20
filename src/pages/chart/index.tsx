@@ -97,20 +97,20 @@ export default function chart() {
 
   /////////////////////////////////
 
-  const topCategor = categorieData.filter((data) => {
+  const topCategorie = categorieData.filter((data) => {
     return data.date.slice(0, 7) === yearMonth
   })
 
-  let categori = ''
-  if (topCategor.length > 0) {
-    categori = topCategor[0].category
+  let categorie = ''
+  if (topCategorie.length > 0) {
+    categorie = topCategorie[0].category
   }
   const chartData3 = {
-    labels: topCategor.map((data) => data.date),
+    labels: topCategorie.map((data) => data.date),
     datasets: [
       {
-        label: `${month}월 최대 지출 카테고리(${categori}) 지출금액`,
-        data: topCategor.map((data) => data.amount),
+        label: `${month}월 최대 지출 카테고리(${categorie}) 지출금액`,
+        data: topCategorie.map((data) => data.amount),
         backgroundColor: ['rgba(238, 102, 121, 1)', 'rgba(98, 181, 229, 1)', 'rgba(255, 198, 0, 1)'],
 
         borderWidth: 2
@@ -146,12 +146,10 @@ export default function chart() {
   }
 
   //////////////////////////////////////
-  console.log(undefinedCategorieData)
+
   const undefinedCategorie = undefinedCategorieData.filter((data) => {
     return data.date.slice(0, 7) === yearMonth
   })
-
-  console.log(undefinedCategorie)
 
   const chartData5 = {
     labels: undefinedCategorie.map((data) => data.date),
