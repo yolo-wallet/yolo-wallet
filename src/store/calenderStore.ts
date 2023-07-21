@@ -20,71 +20,51 @@ export const useCalendarStore = create<CalendarStore>((set) => ({
   weekly: [],
   monthly: [],
   getCategories: async (userId: string) => {
-    try {
-      const res = await api.get<string[]>(`/api/categories?userId=${userId}`)
-      set({ categoriesData: res.data.map((categorie) => ({ categorie, totalAmount: 0 })) })
-    } catch (error) {
-      console.error('Error getting categories:', error)
-    }
+    const { data } = await api.get<string[]>(`/api/categories?userId=${userId}`)
+    set({ categoriesData: data.map((categorie) => ({ categorie, totalAmount: 0 })) })
   },
+
   getExpenses: async (period: ExpensePeriod, userId: string) => {
-    try {
-      const res = await api.get<ExpenseSummary>(`/expenses/summary?period=${period}&userId=${userId}`)
-      set({ [period]: res.data })
-    } catch (error) {
-      console.error('Error getting expenses:', error)
-    }
+    const { data } = await api.get<ExpenseSummary>(`/api/expenses/summary?period=${period}&userId=${userId}`)
+    set({ [period]: data })
   },
   getCalendar: async (year: number, month: number, userId: string) => {
-    try {
-      const res = await api.get<{ [key: string]: Expense[] }>(`/expenses/calendar?year=${year}&month=${month}&userId=${userId}`)
+    const { data } = await api.get<Expense[]>(`api/expenses/calendar?year=${year}&month=${month}&userId=${userId}`)
 
-      if (Object.keys(res.data).length === 0) {
-        return
-      }
-
-      let oneMonthCalender: Expense[] = []
-      for (const key in res.data) {
-        oneMonthCalender = oneMonthCalender.concat(res.data[key])
-      }
-
-      let categories: string[] = [...new Set(oneMonthCalender.map((data) => data.category))]
-
-      let categoriesData: { categorie: string; totalAmount: number }[] = []
-
-      for (let i = 0; i < categories.length; i++) {
-        categoriesData[i] = { categorie: categories[i], totalAmount: 0 }
-
-        oneMonthCalender.forEach((data: Expense) => {
-          if (data.category === categories[i]) {
-            categoriesData[i].totalAmount += data.amount
-          }
-        })
-      }
-
-      categoriesData.sort((a, b) => b.totalAmount - a.totalAmount)
-
-      set({
-        daily: oneMonthCalender,
-        categoriesData: categoriesData
-      })
-    } catch (error) {
-      console.error('Error getting calendar:', error)
+    let oneMonthCalender: Expense[] = []
+    for (let key in data) {
+      oneMonthCalender = oneMonthCalender.concat(data[key])
     }
+
+    let categories: string[] = oneMonthCalender.map((data) => data.category)
+
+    let categoriesData: { categorie: string; totalAmount: number }[] = []
+
+    for (let i = 0; i < categories.length; i++) {
+      categoriesData[i] = { categorie: categories[i], totalAmount: 0 }
+      oneMonthCalender.forEach((data: Expense) => {
+        if (data.category === categories[i]) {
+          categoriesData[i].totalAmount += data.amount
+        }
+      })
+    }
+
+    categoriesData.sort((a, b) => b.totalAmount - a.totalAmount)
+
+    set({
+      daily: oneMonthCalender,
+      categoriesData: categoriesData
+    })
   },
   getCategorieData: async (categorie: string, userId: string) => {
-    try {
-      const res = await api.get<Expense[]>(`/api/expenses/search?q=${categorie}&userId=${userId}`)
+    const res = await api.get<Expense[]>(`/api/expenses/search?q=${categorie}&userId=${userId}`)
 
-      res.data.sort((a, b) => dayjs(a.date).valueOf() - dayjs(b.date).valueOf())
+    res.data.sort((a, b) => dayjs(a.date).valueOf() - dayjs(b.date).valueOf())
 
-      if (categorie === 'undefined') {
-        set({ daily: res.data })
-      } else {
-        set({ daily: res.data })
-      }
-    } catch (error) {
-      console.error('Error getting category data:', error)
+    if (categorie === 'undefined') {
+      set({ daily: res.data })
+    } else {
+      set({ daily: res.data })
     }
   }
 }))
