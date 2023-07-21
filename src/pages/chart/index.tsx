@@ -7,7 +7,7 @@ import dayjs from 'dayjs'
 import BarChart from '@/components/chart/BarChart'
 import LineChart from '@/components/chart/LineChart'
 import DoughnutChart from '@/components/chart/DoughnutChart'
-import Loading from '@/components/chart/loading'
+import Loading from '@/components/chart/Loading'
 
 export default function chart() {
   // 구현할 기능 목록
