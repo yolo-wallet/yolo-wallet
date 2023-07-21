@@ -25,9 +25,9 @@ export const authOptions: NextAuthOptions = {
       userId = res._id
       return true
     }
-  },
-  pages: {
-    signIn: '/auth/signin'
   }
+  // pages: {
+  //   signIn: '/auth/signin'
+  // }
 }
 export default NextAuth(authOptions)

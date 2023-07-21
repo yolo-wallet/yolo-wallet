@@ -160,7 +160,7 @@ export default function LandingPage() {
     if (!selectedExpense) return
     deleteExpense(selectedExpense.id)
   }
-
+  
   return (
     <div>
       <RootLayout>
