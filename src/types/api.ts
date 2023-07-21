@@ -24,6 +24,13 @@ export type SanityExpenseResponse = {
   }
 }
 
+type RequestBody = {
+  userId : string
+  amount : number
+  category : string
+  date : string
+}
+
 export type User = {
   userId: string
   name: string
@@ -36,9 +43,12 @@ export type Expense = {
   userId: string
   category: string
   amount: number
-  date: string
+  date: string | null
 }
 
+export type ExpenseImage = {
+  image: string
+}
 export type ExpenseSummary = {
   _id: string
   totalAmount: number

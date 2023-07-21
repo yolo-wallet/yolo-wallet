@@ -17,6 +17,11 @@ interface CHART {
   undefinedCategorieData: Expense[]
   categoriesData: categoriesData[]
 
+  isCategoriesLoding: boolean
+  isExpensesLoding: boolean
+  isCalendarLoding: boolean
+  isCategorieDataLoding: boolean
+
   getCategories(userId: string): void
   getExpenses(period: ExpensePeriod, userId: string): void
   getCalendar(year: number, month: number, userId: string): void
@@ -32,29 +37,33 @@ export const chartStore = create<CHART>((set) => ({
   categorieData: [],
   undefinedCategorieData: [],
   categoriesData: [],
+  isCategoriesLoding: false,
+  isExpensesLoding: false,
+  isCalendarLoding: false,
+  isCategorieDataLoding: false,
   getCategories: async (userId: string) => {
+    set({ isCategoriesLoding: true })
     const res = await api(`/api/categories?userId=${userId}`)
-    set({
-      categories: res.data
-    })
+    set({ categories: res.data, isCategoriesLoding: false })
   },
 
   getExpenses: async (period: ExpensePeriod, userId: string) => {
+    set({ isExpensesLoding: true })
     const res = await api(`/api/expenses/summary?period=${period}&userId=${userId}`)
 
-    let expenses: {
-      [key in ExpensePeriod]?: ExpenseSummary[]
-    } = {}
+    let expenses: { [key in ExpensePeriod]?: ExpenseSummary[] } = {}
     expenses[period] = res.data
     set(expenses)
+    set({ isExpensesLoding: false })
   },
 
   getCalendar: async (year: number, month: number, userId: string) => {
+    set({ isCalendarLoding: true })
     const res = await api(`/api/expenses/calendar?year=${year}&month=${month}&userId=${userId}`)
 
-    if (Object.keys(res.data).length === 0) {
-      return
-    }
+    // if (Object.keys(res.data).length === 0) {
+    //   return
+    // }
 
     let oneMonthCalender: Expense[] = []
     for (const key in res.data) {
@@ -95,15 +104,17 @@ export const chartStore = create<CHART>((set) => ({
       calendar: oneMonthCalender,
       categoriesData: categoriesData
     })
+    set({ isCalendarLoding: false })
   },
 
   getCategorieData: async (categorie: string, userId: string) => {
+    set({ isCategorieDataLoding: true })
     const res = await api(`/api/expenses/search?q=${categorie}&userId=${userId}`)
 
     res.data.sort((a: Expense, b: Expense): number => {
-      if (a.date < b.date) {
+      if (a.date! < b.date!) {
         return -1
-      } else if (a.date < b.date) {
+      } else if (a.date! < b.date!) {
         return 1
       } else {
         return 0
@@ -119,5 +130,6 @@ export const chartStore = create<CHART>((set) => ({
     set({
       categorieData: res.data
     })
+    set({ isCategorieDataLoding: false })
   }
 }))

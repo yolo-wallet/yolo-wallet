@@ -11,7 +11,10 @@ module.exports = {
       md: '1080px'
     },
     extend: {
-      backgroundImage: {}
+      backgroundImage: {},
+      colors: {
+        forsythia: '#F8D681'
+      }
     }
   },
   plugins: []
