@@ -3,8 +3,6 @@ import dayjs, { Dayjs } from 'dayjs'
 import useUserInfo from '@/hooks/useUserInfo'
 import api from '@/clientAPI'
 import { Expense, ExpenseRequestBody } from '@/types/api'
-
-import RootLayout from '@/components/Layout'
 import { DatePicker } from '@/components/Landing.tsx/DatePicker'
 import { Input } from '@/components/Landing.tsx/Input'
 import { Button } from '@/components/Landing.tsx/Button'
@@ -30,7 +28,7 @@ export default function LandingPage() {
   const fetchExpenses = async () => {
     let url = `/api/expenses/search?userId=${userinfo.userId}`
     if (searchKeyword) url += `&q=${encodeURIComponent(searchKeyword)}`
-    const { data } = await api(url)
+    const { data } = await api<Expense[]>(url)
     const sortedExpenses = data.sort((a, b) => {
       return dayjs(b.date).valueOf() - dayjs(a.date).valueOf()
     })
@@ -160,82 +158,88 @@ export default function LandingPage() {
     if (!selectedExpense) return
     deleteExpense(selectedExpense.id)
   }
-  
+
   return (
-    <div>
-      <RootLayout>
-        <div className="h-screen max-w-[1200px] w-full m-auto p-8">
+    <div className="max-w-[1200px] w-full m-auto p-8">
+      <div>
+        <form className="flex items-center p-5 border bg-forsythia rounded-full">
+          <DatePicker onChange={handleDateChange} value={date ? dayjs(date) : null} />
+          <Input className="w-48" value={category} onChange={handleCategoryChange} placeholder="분류" />
+          <Input className="w-48" type="number" value={amount} onChange={handleAmountChange} placeholder="금액" />
           <div>
-            <form className="flex items-center p-5 border bg-forsythia rounded-full">
-              <DatePicker onChange={handleDateChange} value={date ? dayjs(date) : null} />
-              <Input className="w-48" value={category} onChange={handleCategoryChange} placeholder="분류" />
-              <Input className="w-48" type="number" value={amount} onChange={handleAmountChange} placeholder="금액" />
-              <div>
-                <Button className="bg-white boder border-gray" onClick={addExpense}>
-                  추가
-                </Button>
-              </div>
-              <div className="flex grow"></div>
-              <div>
-                <Input
-                  className="w-48"
-                  value={searchKeyword}
-                  onChange={handleSearchKeywordChange}
-                  placeholder="검색어"
-                />
-                <Button className="bg-white boder border-gray" onClick={searchExpenses}>
-                  검색
-                </Button>
-              </div>
-            </form>
+            <Button className="bg-white boder border-gray" onClick={addExpense}>
+              추가
+            </Button>
           </div>
+          <div className="flex grow" />
+          <div>
+            <Input className="w-48" value={searchKeyword} onChange={handleSearchKeywordChange} placeholder="검색어" />
+            <Button className="bg-white boder border-gray" onClick={searchExpenses}>
+              검색
+            </Button>
+          </div>
+        </form>
+      </div>
 
-          <br />
-          <h2>지출 내역 리스트</h2>
-          <br />
-          <ul>
-            {expenses.map((expense) => (
-              <Card key={expense.id}>
-                <div className="flex gap-2 items-center">
-                  날짜 :<div>{expense.date}</div> | 분류 :<div>{expense.category}</div> | 금액 :
-                  <div>{expense.amount}</div>
-                  <div className="flex grow"></div>
-                  <Button onClick={() => openModal(expense)}>수정</Button>
-                  <Button onClick={() => openDeleteModal(expense)}>삭제</Button>
-                </div>
-              </Card>
-            ))}
-          </ul>
-
-          <Modal
-            title="소비 기록 수정"
-            open={isModalVisible}
-            onCancel={closeModal}
-            onOk={handleUpdateExpense}
-            destroyOnClose
-            wrapClassName="modal-wrapper z-50"
-          >
-            {selectedExpense && (
-              <div className="flex">
-                <DatePicker onChange={handleDateChange} value={date ? dayjs(date) : null} />
-                <Input className="w-48" value={category} onChange={handleCategoryChange} placeholder="분류" />
-                <Input className="w-48" type="number" value={amount} onChange={handleAmountChange} placeholder="금액" />
+      <br />
+      <h2>지출 내역 리스트</h2>
+      <br />
+      <ul>
+        {expenses.map((expense) => (
+          <Card key={expense.id}>
+            <div className="flex gap-2 items-center">
+              <div className="w-1/7 border rounded p-2">날짜: {expense.date}</div>
+              <div className="w-1/6 ">분류: {expense.category}</div>
+              <div className="w-1/6">금액: {expense.amount.toLocaleString('ko-KR', { style: 'currency', currency: 'KRW' })}
               </div>
-            )}
-          </Modal>
+              <div className="flex grow" />
+              <Button onClick={() => openModal(expense)}>수정</Button>
+              <Button onClick={() => openDeleteModal(expense)}>삭제</Button>
+            </div>
+          </Card>
+        ))}
+      </ul>
 
-          <Modal
-            title="소비 기록 삭제"
-            open={isDeleteModalVisible}
-            onCancel={closeDeleteModal}
-            onOk={handleDeleteExpense}
-            destroyOnClose
-            wrapClassName="modal-wrapper z-50"
-          >
-            <p>정말 삭제하시겠습니까?</p>
-          </Modal>
-        </div>
-      </RootLayout>
+      <Modal
+        title="소비 기록 수정"
+        open={isModalVisible}
+        onCancel={closeModal}
+        onOk={handleUpdateExpense}
+        destroyOnClose
+        okButtonProps={{ style: { background: '#1890ff', borderColor: '#1890ff' } }}
+      >
+        {selectedExpense && (
+          <div className="flex">
+            <DatePicker onChange={handleDateChange} value={date ? dayjs(date) : null} />
+            <Input
+              //
+              className="w-48"
+              value={category}
+              onChange={handleCategoryChange}
+              placeholder="분류"
+            />
+            <Input
+              //
+              className="w-48"
+              type="number"
+              value={amount}
+              onChange={handleAmountChange}
+              placeholder="금액"
+            />
+          </div>
+        )}
+      </Modal>
+
+      <Modal
+        title="소비 기록 삭제"
+        open={isDeleteModalVisible}
+        onCancel={closeDeleteModal}
+        onOk={handleDeleteExpense}
+        destroyOnClose
+        okButtonProps={{ style: { background: '#1890ff', borderColor: '#1890ff' } }}
+      >
+        <p>정말 삭제하시겠습니까?</p>
+      </Modal>
     </div>
   )
 }
