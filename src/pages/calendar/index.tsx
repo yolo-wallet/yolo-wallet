@@ -1,8 +1,11 @@
 import React, { useEffect } from 'react'
-import { Alert, Calendar } from 'antd'
+import dynamic from 'next/dynamic'
+const Alert = dynamic(() => import('antd').then((mod) => mod.Alert), { ssr: false })
+const Calendar = dynamic(() => import('antd').then((mod) => mod.Calendar), { ssr: false })
 import type { Dayjs } from 'dayjs'
 import { useCalendarStore } from '@/store/calenderStore'
 import useUserInfo from '@/hooks/useUserInfo'
+
 
 const CalendarPage: React.FC = () => {
   const {
