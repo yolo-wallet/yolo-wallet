@@ -1,7 +1,7 @@
 import useUserInfo from '@/hooks/useUserInfo'
 import { chartStore } from '@/store/chartStore'
 import { ExpenseSummary } from '@/types/api'
-import React, { useEffect, useState } from 'react'
+import React, { useCallback, useEffect, useState } from 'react'
 import dayjs from 'dayjs'
 
 import BarChart from '@/components/chart/BarChart'
@@ -20,7 +20,6 @@ export default function Chart() {
     categoriesData,
     undefinedCategorieData,
     isCategoriesLoding,
-    isCalendarLoding,
     isCategorieDataLoding,
     isExpensesLoding
   } = chartStore()
@@ -33,20 +32,28 @@ export default function Chart() {
   const year = dayjs(date).year() // 2023
   const month = dayjs(date).month() + 1 // 7
 
-  useEffect(() => {
+  const fetchChartData = useCallback(async () => {
     if (userId) {
       getCategories(userId)
       getExpenses('daily', userId)
       getCalendar(year, month, userId)
     }
-  }, [userInfo, date])
+  }, [getCalendar, getCategories, getExpenses, month, userId, year])
 
-  useEffect(() => {
+  const fetchcategories = useCallback(async () => {
     if (categoriesData.length > 0) {
       getCategorieData(categoriesData[0].categorie, userId)
       getCategorieData('undefined', userId)
     }
-  }, [categoriesData, date])
+  }, [categoriesData, getCategorieData, userId])
+
+  useEffect(() => {
+    fetchChartData()
+  }, [userInfo, date, fetchChartData])
+
+  useEffect(() => {
+    fetchcategories()
+  }, [categoriesData, date, fetchcategories])
 
   ///////////////////////////////
 
