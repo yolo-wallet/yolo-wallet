@@ -1,22 +1,15 @@
 import useUserInfo from '@/hooks/useUserInfo'
 import { chartStore } from '@/store/chartStore'
 import { ExpenseSummary } from '@/types/api'
-import React, { useEffect } from 'react'
+import React, { useCallback, useEffect, useState } from 'react'
 import dayjs from 'dayjs'
 
 import BarChart from '@/components/chart/BarChart'
 import LineChart from '@/components/chart/LineChart'
 import DoughnutChart from '@/components/chart/DoughnutChart'
+import Loading from '@/components/chart/Loading'
 
-export default function chart() {
-  // 구현할 기능 목록
-  // 이번 달 카테고리 별 지출 금액 원형그래프
-  // 이번 달 전체 소비 추이 직선그래프
-  // 이번 달 카테고리 별 소비 추이 막대그래프
-
-  // 전체 지출 카테고리 그래프
-  // 년도별 월별 지출 그래프
-
+export default function Chart() {
   const {
     getCategories,
     getExpenses,
@@ -25,33 +18,45 @@ export default function chart() {
     daily,
     categorieData,
     categoriesData,
-    undefinedCategorieData
+    undefinedCategorieData,
+    isCategoriesLoding,
+    isCategorieDataLoding,
+    isExpensesLoding
   } = chartStore()
 
   const [userInfo] = useUserInfo()
   const userId = userInfo.userId
 
-  const date = dayjs(new Date()).format('YYYY-MM-DD') // '2023-07-02'
+  const [date, setDate] = useState(dayjs(new Date()).format('YYYY-MM'))
+
   const year = dayjs(date).year() // 2023
   const month = dayjs(date).month() + 1 // 7
-  const yearMonth = date.slice(0, 7)
 
-  // const date = year.toString() + '-' + (month > 9 ? month.toString() : '0' + month.toString())
+  const fetchChartData = useCallback(async () => {
+    if (userId) {
+      getCategories(userId)
+      getExpenses('daily', userId)
+      getCalendar(year, month, userId)
+    }
+  }, [getCalendar, getCategories, getExpenses, month, userId, year])
 
-  useEffect(() => {
-    getCategories(userId)
-    getExpenses('daily', userId)
-    getCalendar(year, month, userId)
-  }, [userInfo])
-
-  useEffect(() => {
+  const fetchcategories = useCallback(async () => {
     if (categoriesData.length > 0) {
       getCategorieData(categoriesData[0].categorie, userId)
       getCategorieData('undefined', userId)
     }
-  }, [categoriesData])
+  }, [categoriesData, getCategorieData, userId])
+
+  useEffect(() => {
+    fetchChartData()
+  }, [userInfo, date, fetchChartData])
+
+  useEffect(() => {
+    fetchcategories()
+  }, [categoriesData, date, fetchcategories])
 
   ///////////////////////////////
+
   const chartData = {
     labels: categoriesData.map((data) => data.categorie),
     datasets: [
@@ -71,7 +76,7 @@ export default function chart() {
   ////////////////////////////
 
   const oneMonthDaily = daily.filter((day) => {
-    return day._id.slice(0, 7) === yearMonth
+    return day._id.slice(0, 7) === date
   })
 
   oneMonthDaily.sort((a: ExpenseSummary, b: ExpenseSummary): number => {
@@ -98,7 +103,7 @@ export default function chart() {
   /////////////////////////////////
 
   const topCategorie = categorieData.filter((data) => {
-    return data.date.slice(0, 7) === yearMonth
+    return data.date!.slice(0, 7) === date
   })
 
   let categorie = ''
@@ -148,7 +153,7 @@ export default function chart() {
   //////////////////////////////////////
 
   const undefinedCategorie = undefinedCategorieData.filter((data) => {
-    return data.date.slice(0, 7) === yearMonth
+    return data.date!.slice(0, 7) === date
   })
 
   const chartData5 = {
@@ -198,54 +203,91 @@ export default function chart() {
   const chartBoxStyle = 'bg-white drop-shadow-lg w-full p-8 mb-8'
 
   return (
-    <div className="container mx-auto bg-slate-100 ">
-      <div className=" max-w-[764px] mx-auto py-8">
+    <div className="container mx-auto  ">
+      <div className=" max-w-[764px] mx-auto mb-20 py-8">
+        <div className="border-b-4 mb-4">
+          <input
+            className="text-[32px] font-bold bg-transparent"
+            type="month"
+            defaultValue={date}
+            onChange={(e) => {
+              setDate(dayjs(e.target.value).format('YYYY-MM'))
+            }}
+          />
+        </div>
+
         <div className={chartBoxStyle}>
           <p className="mb-5 text-lg font-bold">이번 달 지출 카테고리</p>
-          <div className="flex items-center justify-around flex-wrap">
-            <div>
-              <DoughnutChart chartData={chartData} options={Doughnutoptions} />
+          {isCategoriesLoding ? (
+            <Loading />
+          ) : categoriesData.length ? (
+            <div className="flex items-center justify-around flex-wrap">
+              <div>
+                <DoughnutChart chartData={chartData} options={Doughnutoptions} />
+              </div>
+              <div>
+                <ul>
+                  {categoriesData.map((data) => {
+                    return (
+                      <li
+                        key={data.categorie}
+                        className="border-b border-gray-300 p-2 flex justify-between
+                           min-w-[300px]"
+                      >
+                        <p>{data.categorie}</p>
+                        <p>{data.totalAmount.toLocaleString('ko-KR', { style: 'currency', currency: 'KRW' })}</p>
+                      </li>
+                    )
+                  })}
+                </ul>
+              </div>
             </div>
-            <div>
-              <ul>
-                {categoriesData.map((data) => {
-                  return (
-                    <li
-                      key={data.categorie}
-                      className="border-b border-gray-300 p-2 flex justify-between
-                       min-w-[300px]"
-                    >
-                      <p>{data.categorie}</p>
-                      <p>{data.totalAmount.toLocaleString('ko-KR', { style: 'currency', currency: 'KRW' })}</p>
-                    </li>
-                  )
-                })}
-              </ul>
-            </div>
-          </div>
+          ) : (
+            '데이터 없음'
+          )}
         </div>
 
         <div className={chartBoxStyle}>
           <p className="mb-5 text-lg font-bold">이번 달 일일 지출</p>
-          <BarChart chartData={chartData2} options={options} />
-          <br />
-          <LineChart chartData={chartData2} options={options} />
+          {isExpensesLoding ? (
+            <Loading />
+          ) : oneMonthDaily.length ? (
+            <div>
+              <BarChart chartData={chartData2} options={options} />
+              <br />
+              <LineChart chartData={chartData2} options={options} />
+            </div>
+          ) : (
+            '데이터 없음'
+          )}
         </div>
 
         <div className={chartBoxStyle}>
-          <p className="mb-5 text-lg font-bold">이번 달 TOP1 소비 카테고리</p>
-          <LineChart chartData={chartData3} options={options} />
+          <p className="mb-5 text-lg font-bold">이번 달 TOP1 소비 카테고리 : {categorie}</p>
+          {isCategoriesLoding ? (
+            <Loading />
+          ) : topCategorie.length ? (
+            <BarChart chartData={chartData3} options={options} />
+          ) : (
+            '데이터 없음'
+          )}
         </div>
         <div className={chartBoxStyle}>
           <p className="mb-5 text-lg font-bold">이번 달 미분류 소비 비율</p>
-          <div className="flex items-center justify-around w-full flex-wrap">
-            <div>
-              <DoughnutChart chartData={chartData4} options={Doughnutoptions} />
+          {isCategorieDataLoding ? (
+            <Loading />
+          ) : categoriesData.length ? (
+            <div className="flex items-center justify-around w-full flex-wrap">
+              <div>
+                <DoughnutChart chartData={chartData4} options={Doughnutoptions} />
+              </div>
+              <div>
+                <BarChart chartData={chartData5} options={options} />
+              </div>
             </div>
-            <div>
-              <BarChart chartData={chartData5} options={options} />
-            </div>
-          </div>
+          ) : (
+            '데이터 없음'
+          )}
         </div>
       </div>
     </div>
