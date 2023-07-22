@@ -242,7 +242,7 @@ export default function Chart() {
 
         <div className={chartBoxStyle}>
           <p className="mb-5 text-lg font-bold">이번 달 일일 지출</p>
-          {isCalendarLoding ? (
+          {isExpensesLoding ? (
             <Loading />
           ) : oneMonthDaily.length ? (
             <div>
