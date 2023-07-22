@@ -25,6 +25,7 @@ export default function LandingPage() {
     fetchExpenses()
   }, [userinfo.userId, isLoading])
 
+  
   const fetchExpenses = async () => {
     let url = `/api/expenses/search?userId=${userinfo.userId}`
     if (searchKeyword) url += `&q=${encodeURIComponent(searchKeyword)}`
@@ -162,7 +163,6 @@ export default function LandingPage() {
     if (!selectedExpense) return
     deleteExpense(selectedExpense.id)
   }
-
   return (
     <div className="max-w-[1200px] w-full m-auto p-8">
       <div>
