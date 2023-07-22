@@ -9,15 +9,7 @@ import LineChart from '@/components/chart/LineChart'
 import DoughnutChart from '@/components/chart/DoughnutChart'
 import Loading from '@/components/chart/Loading'
 
-export default function chart() {
-  // 구현할 기능 목록
-  // 이번 달 카테고리 별 지출 금액 원형그래프
-  // 이번 달 전체 소비 추이 직선그래프
-  // 이번 달 카테고리 별 소비 추이 막대그래프
-
-  // 전체 지출 카테고리 그래프
-  // 년도별 월별 지출 그래프
-
+export default function Chart() {
   const {
     getCategories,
     getExpenses,
@@ -37,8 +29,6 @@ export default function chart() {
   const userId = userInfo.userId
 
   const [date, setDate] = useState(dayjs(new Date()).format('YYYY-MM'))
-
-  // const [isLoading, setIsLoading] = useState(false)
 
   const year = dayjs(date).year() // 2023
   const month = dayjs(date).month() + 1 // 7
@@ -252,7 +242,7 @@ export default function chart() {
 
         <div className={chartBoxStyle}>
           <p className="mb-5 text-lg font-bold">이번 달 일일 지출</p>
-          {isCategoriesLoding ? (
+          {isCalendarLoding ? (
             <Loading />
           ) : oneMonthDaily.length ? (
             <div>
@@ -266,18 +256,18 @@ export default function chart() {
         </div>
 
         <div className={chartBoxStyle}>
-          <p className="mb-5 text-lg font-bold">이번 달 TOP1 소비 카테고리</p>
+          <p className="mb-5 text-lg font-bold">이번 달 TOP1 소비 카테고리 : {categorie}</p>
           {isCategoriesLoding ? (
             <Loading />
           ) : topCategorie.length ? (
-            <LineChart chartData={chartData3} options={options} />
+            <BarChart chartData={chartData3} options={options} />
           ) : (
             '데이터 없음'
           )}
         </div>
         <div className={chartBoxStyle}>
           <p className="mb-5 text-lg font-bold">이번 달 미분류 소비 비율</p>
-          {isCategoriesLoding ? (
+          {isCategorieDataLoding ? (
             <Loading />
           ) : categoriesData.length ? (
             <div className="flex items-center justify-around w-full flex-wrap">

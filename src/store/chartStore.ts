@@ -61,10 +61,6 @@ export const chartStore = create<CHART>((set) => ({
     set({ isCalendarLoding: true })
     const res = await api(`/api/expenses/calendar?year=${year}&month=${month}&userId=${userId}`)
 
-    // if (Object.keys(res.data).length === 0) {
-    //   return
-    // }
-
     let oneMonthCalender: Expense[] = []
     for (const key in res.data) {
       oneMonthCalender = oneMonthCalender.concat(res.data[key])
