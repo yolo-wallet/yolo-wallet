@@ -43,7 +43,7 @@ export default function Chart() {
   const fetchcategories = useCallback(async () => {
     if (categoriesData.length > 0) {
       getCategorieData(categoriesData[0].categorie, userId)
-      getCategorieData('undefined', userId)
+      getCategorieData('미지정', userId)
     }
   }, [categoriesData, getCategorieData, userId])
 
@@ -124,9 +124,9 @@ export default function Chart() {
   }
 
   ////////////////////////////////
-  const undefinedData = categoriesData.filter((data) => data.categorie === 'undefined')
+  const undefinedData = categoriesData.filter((data) => data.categorie === '미지정')
 
-  const noUndefinedData = categoriesData.filter((data) => data.categorie !== 'undefined')
+  const noUndefinedData = categoriesData.filter((data) => data.categorie !== '미지정')
   let sum = 0
   for (let i = 0; i < noUndefinedData.length; i++) {
     sum = sum + noUndefinedData[i].totalAmount

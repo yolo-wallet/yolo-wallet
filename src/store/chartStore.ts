@@ -117,7 +117,7 @@ export const chartStore = create<CHART>((set) => ({
       }
     })
 
-    if (categorie === 'undefined') {
+    if (categorie === '미지정') {
       set({
         undefinedCategorieData: res.data
       })
