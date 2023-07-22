@@ -56,14 +56,15 @@ export default function LandingPage() {
   }
 
   const addExpense = async () => {
-    if (!date || category.trim() === '' || amount.trim() === '') {
+    if (!date || amount.trim() === '') {
       alert('날짜, 분류, 금액을 모두 입력해주세요.')
       return
     }
+    const newCategoryValue = category.trim() === '' ? '미지정' : category
     const newExpense: ExpenseRequestBody = {
       userId: userinfo.userId,
       amount: parseInt(amount),
-      category,
+      category: newCategoryValue,
       date
     }
     try {
@@ -73,7 +74,10 @@ export default function LandingPage() {
           'Content-Type': 'application/json'
         },
         body: JSON.stringify(newExpense)
+        
+        
       })
+      console.log(newExpense);
 
       if (response.ok) {
         setDate(null)
