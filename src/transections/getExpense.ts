@@ -18,7 +18,6 @@ export async function getExpensesCalendarTransaction(year: string, month: string
 
     const expenseCalendar: ExpenseCalendar = {}
 
-    console.log('expenses', expenses)
     expenses
       // .filter((expense) => {
       //   return dayjs(expense.date).format('YYYY') === year && Number(dayjs(expense.date).format('MM')) === Number(month)

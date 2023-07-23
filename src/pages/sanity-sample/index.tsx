@@ -64,7 +64,6 @@ export default function Test() {
   async function getCategoryByUserId(e: React.MouseEvent<HTMLButtonElement, MouseEvent>) {
     e.preventDefault()
     const { data } = await api(`/api/categories?userId=${userInfo.userId}`)
-    console.log(data)
     setCategory(data)
   }
 
