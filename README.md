@@ -91,5 +91,69 @@
 ![YOLO_Diagram](https://github.com/yolo-wallet/yolo-wallet/assets/73880776/89fb6431-e97d-4ca6-ac26-f0201c93c9c6)
 
 
+## 회고
+
+
+## 백지욱
+
+제가 맡은 역할은 캘린더 페이지였습니다.
+
+next.js를 처음 사용했던것도 있고 기본기가 부족해서 그런지
+
+처음 구상했던거보다 많은걸 구현하지 못하였습니다.
+
+구현을 하더라도 디자인적으로 깔끔 하지 못하게 구현못할껀 깔끔하게 포기했습니다.
+
+또한 이것저것 시도하다가 라이브러리를 포기하지 못하고 사용하였습니다.
+
+저희 조는 태욱님께서 서버를 따로 만들고 예시 api를 만들었다던지
+
+좋은 코드 나쁜코드를 이야기 해주셨습니다.
+
+토이프로젝트2는 많은걸 배워갈 시간이였다고 생각합니다
+
+----
+
+### 정태욱
+
+### 좋았던 점
+
+1. Headless CMS (Sanity), Next-Auth 사용
+
+Headless CMS와 Next-Auth로 백엔드와 소셜 로그인 구현을 구현했다.
+
+Headless CMS (Sanity)는 schema를 작성하는 방법과 GROQ라는 자체 쿼리언어가 직관적이라 문서를 join하는 것과 transaction 처리가 간단했다.
+
+Next-Auth는 내부적으로 로그인에 필요한 인증을 모두 처리해주고,
+
+서버에서 사용할 수 있는 getServerSession과 클라이언트에서 사용할 수 있는 useSession hook을 제공하기 때문에 간단하게 로그인을 구현 할 수 있었다.
+
+2. Github Organization 활용
+
+Github의 Organization, issue template, Wiki, Project 칸반 보드, Git flow를 활용해 프로젝트를 관리했다.
+
+### 아쉬웠던 점
+
+1. Optimistic UI
+
+클라이언트에서 인터렉션한 작업이 많았고
+
+react-query나 SWC를 사용해서 클라이언트에서 API 요청이 일어나면 일부 요청은 revalidate되지 않고
+
+캐싱된 데이터를 Optimistic하게 제공함으로 API의 요청을 최소한으로 줄여보고 싶었는데
+
+아쉽게도 페이지를 담당하지 않아서 적용해보지 못했다.
+
+2. Server Component, Server Side Caching
+
+Next.js 12의 pages directory를 사용했기 때문에 CSS 프레임워크나 라이브러리의 모든 소스를 클라이언트로 전송해야 했고,
+
+Next.js 13의 fetch API로 프론트 서버에서 API의 호출 결과를 캐싱함으로 DB에 부하를 줄이고 요청 속도를 높이고 싶었는데 아쉽게도 12버전을 사용했기 때문에 적용하지 못했다.
+
+
+
+
+
+
 
 
