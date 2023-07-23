@@ -1,13 +1,15 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, Suspense } from 'react'
 import dayjs, { Dayjs } from 'dayjs'
 import useUserInfo from '@/hooks/useUserInfo'
 import api from '@/clientAPI'
 import { Expense, ExpenseRequestBody } from '@/types/api'
-import { DatePicker } from '@/components/Landing.tsx/DatePicker'
-import { Input } from '@/components/Landing.tsx/Input'
-import { Button } from '@/components/Landing.tsx/Button'
-import { Card } from '@/components/Landing.tsx/Card'
-import { Modal } from '@/components/Landing.tsx/Modal'
+
+import { DatePicker } from '@/components/Landing/DatePicker'
+import { Input } from '@/components/Landing/Input'
+import { Button } from '@/components/Landing/Button'
+import { Card } from '@/components/Landing/Card'
+import { Modal } from '@/components/Landing/Modal'
+import { Form } from '@/components/Landing/Form'
 
 export default function LandingPage() {
   const [expenses, setExpenses] = useState<Expense[]>([])
@@ -15,7 +17,7 @@ export default function LandingPage() {
   const [category, setCategory] = useState('')
   const [amount, setAmount] = useState('')
   const [searchKeyword, setSearchKeyword] = useState('')
-  const [userinfo, isLoading] = useUserInfo()
+  const [userinfo, isLoading, isLoggedIn] = useUserInfo()
   const [isModalVisible, setIsModalVisible] = useState(false)
   const [selectedExpense, setSelectedExpense] = useState<Expense | null>(null)
   const [isDeleteModalVisible, setIsDeleteModalVisible] = useState(false)
@@ -25,7 +27,6 @@ export default function LandingPage() {
     fetchExpenses()
   }, [userinfo.userId, isLoading])
 
-  
   const fetchExpenses = async () => {
     let url = `/api/expenses/search?userId=${userinfo.userId}`
     if (searchKeyword) url += `&q=${encodeURIComponent(searchKeyword)}`
@@ -75,10 +76,7 @@ export default function LandingPage() {
           'Content-Type': 'application/json'
         },
         body: JSON.stringify(newExpense)
-        
-        
       })
-      console.log(newExpense);
 
       if (response.ok) {
         setDate(null)
@@ -87,7 +85,6 @@ export default function LandingPage() {
         fetchExpenses()
       }
     } catch (error) {
-      console.error('Failed to add expense:', error)
       alert('소비 기록 추가에 실패했습니다.')
     }
   }
@@ -106,7 +103,6 @@ export default function LandingPage() {
         closeModal()
       }
     } catch (error) {
-      console.error('Failed to update expense:', error)
       alert('소비 기록 수정에 실패했습니다.')
     }
   }
@@ -121,7 +117,6 @@ export default function LandingPage() {
         closeDeleteModal()
       }
     } catch (error) {
-      console.error('Failed to delete expense:', error)
       alert('소비 기록 삭제에 실패했습니다.')
     }
   }
@@ -163,38 +158,61 @@ export default function LandingPage() {
     if (!selectedExpense) return
     deleteExpense(selectedExpense.id)
   }
+
   return (
     <div className="max-w-[1200px] w-full m-auto p-8">
-      <div>
-        <form className="flex items-center p-5 border bg-forsythia rounded-full">
-          <DatePicker onChange={handleDateChange} value={date ? dayjs(date) : null} />
-          <Input className="w-48" value={category} onChange={handleCategoryChange} placeholder="분류" />
-          <Input className="w-48" type="number" value={amount} onChange={handleAmountChange} placeholder="금액" />
-          <div>
-            <Button className="bg-white boder border-gray" onClick={addExpense}>
-              추가
-            </Button>
-          </div>
-          <div className="flex grow" />
-          <div>
-            <Input className="w-48" value={searchKeyword} onChange={handleSearchKeywordChange} placeholder="검색어" />
-            <Button className="bg-white boder border-gray" onClick={searchExpenses}>
-              검색
-            </Button>
-          </div>
-        </form>
+      <div className="flex items-center justify-between p-5 border bg-forsythia rounded-full flex-col gap-5 md:flex-row">
+        <Form onFinish={addExpense}>
+          <DatePicker className="mr-2" onChange={handleDateChange} value={date ? dayjs(date) : null} />
+          <Input
+            className="w-48 mr-2"
+            type="string"
+            value={category}
+            onChange={handleCategoryChange}
+            placeholder="분류"
+          />
+
+          <Input
+            //
+            className="w-48 mr-2"
+            type="number"
+            value={amount}
+            onChange={handleAmountChange}
+            placeholder="금액"
+          />
+          <Button
+            //
+            htmlType="submit"
+            className="bg-white boder border-gray "
+            onSubmit={addExpense}
+            onClick={addExpense}
+          >
+            추가
+          </Button>
+        </Form>
+        <Form onFinish={searchExpenses}>
+          <Input
+            className="w-48 mr-2"
+            value={searchKeyword}
+            onChange={handleSearchKeywordChange}
+            placeholder="검색어"
+          />
+          <Button htmlType="submit" className="bg-white boder border-gray" onClick={searchExpenses}>
+            검색
+          </Button>
+        </Form>
       </div>
 
-      <br />
-      <h2>지출 내역 리스트</h2>
-      <br />
+      <h2 className="my-8 text-2xl">지출 내역 리스트</h2>
+      {!isLoading && !isLoggedIn && <div>구글 로그인 후 해당 서비스를 이용해주세요 :)</div>}
       <ul>
         {expenses.map((expense) => (
           <Card key={expense.id}>
             <div className="flex gap-2 items-center">
               <div className="w-1/7 border rounded p-2">날짜: {expense.date}</div>
               <div className="w-1/6 ">분류: {expense.category}</div>
-              <div className="w-1/6">금액: {expense.amount.toLocaleString('ko-KR', { style: 'currency', currency: 'KRW' })}
+              <div className="w-1/6">
+                금액: {expense.amount.toLocaleString('ko-KR', { style: 'currency', currency: 'KRW' })}
               </div>
               <div className="flex grow" />
               <Button onClick={() => openModal(expense)}>수정</Button>

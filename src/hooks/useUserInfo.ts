@@ -15,18 +15,24 @@ const useUserInfo = () => {
   const session = useSession()
 
   const fetchUserInfo = useCallback(() => {
-    if (!email) return
+    if (!email) {
+      setIsLoading(false)
+      setIsLoggedIn(false)
+      return
+    }
     setIsLoading(true)
+
     api(`/api/user?email=${email}`)
       .then((res) => {
         setUserInfo(res.data)
         if (session.status === 'authenticated') setIsLoggedIn(true)
         else setIsLoggedIn(false)
       })
+      .catch((err) => err)
       .finally(() => {
         setIsLoading(false)
       })
-  }, [email, session.status])
+  }, [email, session])
 
   useEffect(() => {
     if (session.data?.user?.email) {
@@ -36,7 +42,7 @@ const useUserInfo = () => {
 
   useEffect(() => {
     fetchUserInfo()
-  }, [email, fetchUserInfo])
+  }, [email])
 
   const userInfoHooks: UserInfoHooks = [userInfo, isloading, isLoggedIn]
   return userInfoHooks
