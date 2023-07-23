@@ -121,6 +121,7 @@ export const chartStore = create<CHART>((set) => ({
       set({
         undefinedCategorieData: res.data
       })
+      set({ isCategorieDataLoding: false })
       return
     }
     set({
