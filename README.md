@@ -160,6 +160,19 @@ Next.js에서는 Antd(라이브러리) 사용 시 Dynamic import를 통해 가�
 
 ![image](https://github.com/yolo-wallet/yolo-wallet/assets/73880776/1e1fd77a-d1e0-471f-99b7-61fc683bb499)
 
+
+```js
+   import dynamic from 'next/dynamic'
+    const DatePicker = dynamic(() => import('antd').then((lib) => lib.DatePicker), {
+      ssr: false,
+      loading: () => <div>loading...</div>
+    })
+    
+    export default function DatePickerForm() {
+      return <DatePicker />
+    }
+```
+
 Github 이슈 기능 첫 활용으로 실시간으로 동료들 진행현황 확인 가능하며 확실하고 체계화된 팀 프로젝트가 가능했다.
 
 폴더 구조를 좀 더 명확하게 이해할 수 있었다.
