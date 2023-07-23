@@ -54,15 +54,9 @@
   
 <img src="https://img.shields.io/badge/Sanity-AA344D?style=flat-square&logo=Sanity&logoColor=white" alt="Sanity" />
 
-<img src="https://img.shields.io/badge/Next.js-000000?style=flat-square&logo=Next.js&logoColor=white" alt="Next.js" />
-
 <img src="https://img.shields.io/badge/TypeScript-13324B?style=flat-square&logo=TypeScript&logoColor=white" alt="typescript" />
 
-<img src="https://img.shields.io/badge/Ant_Design-26689A?style=flat-square&logo=Ant-Design&logoColor=white" alt="tailwind" />
-
 <img src="https://img.shields.io/badge/Next--auth-512BD4?style=flat-square&logo=Next.js&logoColor=white" alt="next-auth" />
-
-<img src="https://img.shields.io/badge/Chart.js-FF6384?style=flat-square&logo=Chart.js&logoColor=white" alt="chart.js" />
 
 </div>
 
