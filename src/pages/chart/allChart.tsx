@@ -62,6 +62,7 @@ const chart = () => {
       }
     ]
   }
+  
 
   const chartData2 = {
     labels: categoriesData.map((data) => data.categorie),

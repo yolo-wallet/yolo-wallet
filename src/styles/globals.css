@@ -37,6 +37,6 @@ body {
     @apply h-[7rem];
   }
   .main-height {
-    @apply min-h-[calc(100vh_-_7rem)];
+    @apply min-h-[calc(100vh_-_7rem)] pb-[7rem];
   }
 }

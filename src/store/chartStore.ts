@@ -1,90 +1,131 @@
-import { create } from 'zustand'
 import api from '@/clientAPI'
-import dayjs from 'dayjs'
 import { Expense, ExpensePeriod, ExpenseSummary } from '@/types/api'
+import { create } from 'zustand'
 
-interface CalendarStore {
-  categoriesData: { categorie: string; totalAmount: number }[]
-  daily: Expense[]
-  weekly: Expense[]
-  monthly: Expense[]
-  getCategories: (userId: string) => void
-  getExpenses: (period: ExpensePeriod, userId: string) => void
-  getCalendar: (year: number, month: number, userId: string) => void
-  getCategorieData: (categorie: string, userId: string) => void
+interface categoriesData {
+  categorie: string
+  totalAmount: number
 }
 
-export const useCalendarStore = create<CalendarStore>((set) => ({
-  categoriesData: [],
+interface CHART {
+  categories: string[]
+  daily: ExpenseSummary[]
+  weekly: ExpenseSummary[]
+  monthly: ExpenseSummary[]
+  calendar: Expense[]
+  categorieData: Expense[]
+  undefinedCategorieData: Expense[]
+  categoriesData: categoriesData[]
+
+  isCategoriesLoding: boolean
+  isExpensesLoding: boolean
+  isCalendarLoding: boolean
+  isCategorieDataLoding: boolean
+
+  getCategories(userId: string): void
+  getExpenses(period: ExpensePeriod, userId: string): void
+  getCalendar(year: number, month: number, userId: string): void
+  getCategorieData(categorie: string, userId: string): void
+}
+
+export const chartStore = create<CHART>((set) => ({
+  categories: [],
   daily: [],
   weekly: [],
   monthly: [],
+  calendar: [],
+  categorieData: [],
+  undefinedCategorieData: [],
+  categoriesData: [],
+  isCategoriesLoding: false,
+  isExpensesLoding: false,
+  isCalendarLoding: false,
+  isCategorieDataLoding: false,
   getCategories: async (userId: string) => {
-    try {
-      const res = await api.get<string[]>(`/api/categories?userId=${userId}`)
-      set({ categoriesData: res.data.map((categorie) => ({ categorie, totalAmount: 0 })) })
-    } catch (error) {
-      console.error('Error getting categories:', error)
-    }
+    set({ isCategoriesLoding: true })
+    const res = await api(`/api/categories?userId=${userId}`)
+    set({ categories: res.data, isCategoriesLoding: false })
   },
+
   getExpenses: async (period: ExpensePeriod, userId: string) => {
-    try {
-      const res = await api.get<ExpenseSummary>(`/expenses/summary?period=${period}&userId=${userId}`)
-      set({ [period]: res.data })
-    } catch (error) {
-      console.error('Error getting expenses:', error)
-    }
+    set({ isExpensesLoding: true })
+    const res = await api(`/api/expenses/summary?period=${period}&userId=${userId}`)
+
+    let expenses: { [key in ExpensePeriod]?: ExpenseSummary[] } = {}
+    expenses[period] = res.data
+    set(expenses)
+    set({ isExpensesLoding: false })
   },
+
   getCalendar: async (year: number, month: number, userId: string) => {
-    try {
-      const res = await api.get<{ [key: string]: Expense[] }>(`/expenses/calendar?year=${year}&month=${month}&userId=${userId}`)
+    set({ isCalendarLoding: true })
+    const res = await api(`/api/expenses/calendar?year=${year}&month=${month}&userId=${userId}`)
 
-      if (Object.keys(res.data).length === 0) {
-        return
-      }
+    let oneMonthCalender: Expense[] = []
+    for (const key in res.data) {
+      oneMonthCalender = oneMonthCalender.concat(res.data[key])
+    }
 
-      let oneMonthCalender: Expense[] = []
-      for (const key in res.data) {
-        oneMonthCalender = oneMonthCalender.concat(res.data[key])
-      }
-
-      let categories: string[] = [...new Set(oneMonthCalender.map((data) => data.category))]
-
-      let categoriesData: { categorie: string; totalAmount: number }[] = []
-
-      for (let i = 0; i < categories.length; i++) {
-        categoriesData[i] = { categorie: categories[i], totalAmount: 0 }
-
-        oneMonthCalender.forEach((data: Expense) => {
-          if (data.category === categories[i]) {
-            categoriesData[i].totalAmount += data.amount
-          }
+    let categories: string[] = [
+      ...new Set(
+        oneMonthCalender.map((data) => {
+          return data.category
         })
-      }
+      )
+    ]
 
-      categoriesData.sort((a, b) => b.totalAmount - a.totalAmount)
+    let categoriesData: categoriesData[] = []
 
-      set({
-        daily: oneMonthCalender,
-        categoriesData: categoriesData
+    for (let i = 0; i < categories.length; i++) {
+      categoriesData[i] = { categorie: categories[i], totalAmount: 0 }
+
+      oneMonthCalender.map((data: Expense) => {
+        if (data.category === categories[i]) {
+          categoriesData[i].totalAmount = categoriesData[i].totalAmount + data.amount
+        }
       })
-    } catch (error) {
-      console.error('Error getting calendar:', error)
     }
-  },
-  getCategorieData: async (categorie: string, userId: string) => {
-    try {
-      const res = await api.get<Expense[]>(`/api/expenses/search?q=${categorie}&userId=${userId}`)
 
-      res.data.sort((a, b) => dayjs(a.date).valueOf() - dayjs(b.date).valueOf())
-
-      if (categorie === 'undefined') {
-        set({ daily: res.data })
+    categoriesData.sort((a: categoriesData, b: categoriesData): number => {
+      if (a.totalAmount > b.totalAmount) {
+        return -1
+      } else if (a.totalAmount < b.totalAmount) {
+        return 1
       } else {
-        set({ daily: res.data })
+        return 0
       }
-    } catch (error) {
-      console.error('Error getting category data:', error)
+    })
+
+    set({
+      calendar: oneMonthCalender,
+      categoriesData: categoriesData
+    })
+    set({ isCalendarLoding: false })
+  },
+
+  getCategorieData: async (categorie: string, userId: string) => {
+    set({ isCategorieDataLoding: true })
+    const res = await api(`/api/expenses/search?q=${categorie}&userId=${userId}`)
+
+    res.data.sort((a: Expense, b: Expense): number => {
+      if (a.date! < b.date!) {
+        return -1
+      } else if (a.date! < b.date!) {
+        return 1
+      } else {
+        return 0
+      }
+    })
+
+    if (categorie === '미지정') {
+      set({
+        undefinedCategorieData: res.data
+      })
+      return
     }
+    set({
+      categorieData: res.data
+    })
+    set({ isCategorieDataLoding: false })
   }
 }))
