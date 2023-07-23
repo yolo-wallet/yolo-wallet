@@ -90,6 +90,10 @@
 | ![db_page](https://github.com/yolo-wallet/yolo-wallet/assets/73880776/47043ef6-2d2e-49bc-887a-f5e30189d140) |
 
 
+### 다이어그램
+
+![YOLO_Diagram](https://github.com/yolo-wallet/yolo-wallet/assets/73880776/89fb6431-e97d-4ca6-ac26-f0201c93c9c6)
+
 
 
 
