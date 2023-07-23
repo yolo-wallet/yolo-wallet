@@ -23,6 +23,8 @@
 
 [YOLO Wallet 구경하기](https://yolo-wallet.vercel.app/)
 
+[YOLO Wallet Wiki](https://github.com/yolo-wallet/yolo-wallet/wiki)
+
 [프로젝트 Github 저장소로 이동하기]
 
 ### Technologies & Tools
