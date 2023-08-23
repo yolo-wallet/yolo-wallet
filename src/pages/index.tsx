@@ -184,8 +184,6 @@ export default function LandingPage() {
             //
             htmlType="submit"
             className="bg-white boder border-gray "
-            onSubmit={addExpense}
-            onClick={addExpense}
           >
             추가
           </Button>
